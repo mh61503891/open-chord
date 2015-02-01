@@ -1,29 +1,12 @@
 /***************************************************************************
- *                                                                         *
- *                                Entry.java                               *
- *                            -------------------                          *
- *   date                 : 28.02.2005                                     *
- *   copyright            : (C) 2004-2008 Distributed and                  *
- *                              Mobile Systems Group                       *
- *                              Lehrstuhl fuer Praktische Informatik       *
- *                              Universitaet Bamberg                       *
- *                              http://www.uni-bamberg.de/pi/              *
- *   email                : sven.kaffille@uni-bamberg.de                   *
- *                          karsten.loesing@uni-bamberg.de                 *
- *                                                                         *
- *                                                                         *
+ * * Entry.java * ------------------- * date : 28.02.2005 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer Praktische
+ * Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   A copy of the license can be found in the license.txt file supplied   *
- *   with this software or at: http://www.gnu.org/copyleft/gpl.html        *
- *                                                                         *
+ * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
+ * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
  ***************************************************************************/
 
 package de.uniba.wiai.lspi.chord.com;
@@ -38,18 +21,17 @@ import de.uniba.wiai.lspi.chord.data.ID;
  */
 public final class Entry implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 3473253817147038992L;
 
 	/**
-	 * The id of this entry. 
+	 * The id of this entry.
 	 */
 	private ID id;
 
 	/**
-	 * The stored value. 
-	 * 
+	 * The stored value.
 	 */
 	private Serializable value;
 
@@ -76,11 +58,12 @@ public final class Entry implements Serializable {
 		return this.value;
 	}
 
+	@Override
 	public String toString() {
-		return "( key = " + this.id.toString() + ", value = " + this.value
-				+ ")";
+		return "( key = " + this.id.toString() + ", value = " + this.value + ")";
 	}
 
+	@Override
 	public int hashCode() {
 		int result = 17;
 		result += 37 * this.id.hashCode();
@@ -88,6 +71,7 @@ public final class Entry implements Serializable {
 		return result;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Entry)) {
 			return false;

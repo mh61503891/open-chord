@@ -1,28 +1,12 @@
 /***************************************************************************
- *                                                                         *
- *                             RMIEndpoint.java                            *
- *                            -------------------                          *
- *   date                 : 22.02.2008, 14:10:40                           *
- *   copyright            : (C) 2008 Distributed and                       *
- *                              Mobile Systems Group                       *
- *                              Lehrstuhl fuer Praktische Informatik       *
- *                              Universitaet Bamberg                       *
- *                              http://www.uni-bamberg.de/pi/              *
- *   email                : sven.kaffille@uni-bamberg.de                   *
- *                                                                         *
- *                                                                         *
+ * * RMIEndpoint.java * ------------------- * date : 22.02.2008, 14:10:40 * copyright : (C) 2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer
+ * Praktische Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * * *
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   A copy of the license can be found in the license.txt file supplied   *
- *   with this software or at: http://www.gnu.org/copyleft/gpl.html        *
- *                                                                         *
+ * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
+ * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
  ***************************************************************************/
 package de.uniba.wiai.lspi.chord.com.rmi;
 
@@ -60,6 +44,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 
 	/**
 	 * Can only be called if Endpoint is not in state STARTED!
+	 *
 	 * @return
 	 */
 	RemoteNode getRemoteNode() {
@@ -105,22 +90,18 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 
 	private RemoteNodeInfo createInfo(Node node) {
 		if (node.getNodeID().equals(this.node.getNodeID())) {
-			return new RemoteNodeInfo(remoteNode, this.node.getNodeID(),
-					this.node.getNodeURL());
+			return new RemoteNodeInfo(remoteNode, this.node.getNodeID(), this.node.getNodeURL());
 		} else {
-			return new RemoteNodeInfo(((RMIProxy) node).getRemoteNode(), node
-					.getNodeID(), node.getNodeURL());
+			return new RemoteNodeInfo(((RMIProxy) node).getRemoteNode(), node.getNodeID(), node.getNodeURL());
 		}
 	}
 
-	public RemoteNodeInfo findSuccessor(ID key) throws CommunicationException,
-			RemoteException {
+	public RemoteNodeInfo findSuccessor(ID key) throws CommunicationException, RemoteException {
 		try {
 			Node node = this.node.findSuccessor(key);
 			return createInfo(node);
 		} catch (ClassCastException e) {
-			throw new RemoteException(
-					"Remote node uses unsuitable communication protocol!", e);
+			throw new RemoteException("Remote node uses unsuitable communication protocol!", e);
 		}
 	}
 
@@ -128,25 +109,20 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 		return this.node.getNodeID();
 	}
 
-	public void insertEntry(Entry entryToInsert) throws RemoteException,
-			CommunicationException {
+	public void insertEntry(Entry entryToInsert) throws RemoteException, CommunicationException {
 		this.node.insertEntry(entryToInsert);
 	}
 
-	public void insertReplicas(Set<Entry> entries) throws RemoteException,
-			CommunicationException {
+	public void insertReplicas(Set<Entry> entries) throws RemoteException, CommunicationException {
 		this.node.insertReplicas(entries);
 	}
 
-	public void leavesNetwork(RemoteNodeInfo predecessor)
-			throws RemoteException, CommunicationException {
+	public void leavesNetwork(RemoteNodeInfo predecessor) throws RemoteException, CommunicationException {
 		this.node.leavesNetwork(new RMIProxy(predecessor, this.getURL()));
 	}
 
-	public List<RemoteNodeInfo> notify(RemoteNodeInfo potentialPredecessor)
-			throws RemoteException, CommunicationException {
-		List<Node> nodes = this.node.notify(new RMIProxy(potentialPredecessor,
-				this.getURL()));
+	public List<RemoteNodeInfo> notify(RemoteNodeInfo potentialPredecessor) throws RemoteException, CommunicationException {
+		List<Node> nodes = this.node.notify(new RMIProxy(potentialPredecessor, this.getURL()));
 		List<RemoteNodeInfo> result = new LinkedList<RemoteNodeInfo>();
 		for (Node node : nodes) {
 			result.add(this.createInfo(node));
@@ -155,11 +131,8 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 		return result;
 	}
 
-	public RemoteRefsAndEntries notifyAndCopyEntries(
-			RemoteNodeInfo potentialPredecessor) throws RemoteException,
-			CommunicationException {
-		RefsAndEntries raes = this.node.notifyAndCopyEntries(new RMIProxy(
-				potentialPredecessor, this.getURL()));
+	public RemoteRefsAndEntries notifyAndCopyEntries(RemoteNodeInfo potentialPredecessor) throws RemoteException, CommunicationException {
+		RefsAndEntries raes = this.node.notifyAndCopyEntries(new RMIProxy(potentialPredecessor, this.getURL()));
 		List<RemoteNodeInfo> rNodes = new LinkedList<RemoteNodeInfo>();
 		List<Node> nodes = raes.getRefs();
 		for (Node node : nodes) {
@@ -171,19 +144,16 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	public void ping() throws RemoteException {
 	}
 
-	public void removeEntry(Entry entryToRemove) throws RemoteException,
-			CommunicationException {
+	public void removeEntry(Entry entryToRemove) throws RemoteException, CommunicationException {
 		this.node.removeEntry(entryToRemove);
 	}
 
-	public void removeReplicas(ID sendingNode, Set<Entry> replicasToRemove)
-			throws RemoteException, CommunicationException {
+	public void removeReplicas(ID sendingNode, Set<Entry> replicasToRemove) throws RemoteException, CommunicationException {
 		this.node.removeReplicas(sendingNode, replicasToRemove);
 
 	}
 
-	public Set<Entry> retrieveEntries(ID id) throws RemoteException,
-			CommunicationException {
+	public Set<Entry> retrieveEntries(ID id) throws RemoteException, CommunicationException {
 		return this.node.retrieveEntries(id);
 	}
 }

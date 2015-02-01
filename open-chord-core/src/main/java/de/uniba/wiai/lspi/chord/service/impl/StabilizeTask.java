@@ -1,29 +1,12 @@
 /***************************************************************************
- *                                                                         *
- *                            StabilizeTask.java                           *
- *                            -------------------                          *
- *   date                 : 16.08.2004                                     *
- *   copyright            : (C) 2004-2008 Distributed and                  *
- *                              Mobile Systems Group                       *
- *                              Lehrstuhl fuer Praktische Informatik       *
- *                              Universitaet Bamberg                       *
- *                              http://www.uni-bamberg.de/pi/              *
- *   email                : sven.kaffille@uni-bamberg.de                   *
- *                      karsten.loesing@uni-bamberg.de                 *
- *                                                                         *
- *                                                                         *
+ * * StabilizeTask.java * ------------------- * date : 16.08.2004 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer Praktische
+ * Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   A copy of the license can be found in the license.txt file supplied   *
- *   with this software or at: http://www.gnu.org/copyleft/gpl.html        *
- *                                                                         *
+ * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
+ * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
  ***************************************************************************/
 package de.uniba.wiai.lspi.chord.service.impl;
 
@@ -39,7 +22,7 @@ import de.uniba.wiai.lspi.util.logging.Logger;
 
 /**
  * Invokes notify method on successor.
- * 
+ *
  * @author Karsten Loesing, Sven Kaffille
  * @version 1.0.5
  */
@@ -60,12 +43,11 @@ final class StabilizeTask implements Runnable {
 	/**
 	 * Object logger.
 	 */
-	protected final static Logger logger = Logger
-			.getLogger(StabilizeTask.class);
+	protected final static Logger logger = Logger.getLogger(StabilizeTask.class);
 
 	/**
 	 * Creates a new instance, but without starting a thread running it.
-	 * 
+	 *
 	 * @param parent
 	 *            Parent object for performing stabilization.
 	 * @param references
@@ -76,8 +58,7 @@ final class StabilizeTask implements Runnable {
 	StabilizeTask(NodeImpl parent, References references, Entries entries) {
 
 		if (parent == null || references == null || entries == null) {
-			throw new NullPointerException(
-					"No argument to constructor may be null!");
+			throw new NullPointerException("No argument to constructor may be null!");
 		}
 
 		this.parent = parent;
@@ -88,14 +69,12 @@ final class StabilizeTask implements Runnable {
 	public void run() {
 		try {
 
-			final boolean debugEnabled = StabilizeTask.logger
-					.isEnabledFor(DEBUG);
+			final boolean debugEnabled = StabilizeTask.logger.isEnabledFor(DEBUG);
 			final boolean infoEnabled = StabilizeTask.logger.isEnabledFor(INFO);
 
 			// start of method
 			if (debugEnabled) {
-				StabilizeTask.logger
-						.debug("Stabilize method has been invoked periodically");
+				StabilizeTask.logger.debug("Stabilize method has been invoked periodically");
 			}
 
 			// determine successor
@@ -104,8 +83,7 @@ final class StabilizeTask implements Runnable {
 
 				// nothing to stabilize
 				if (infoEnabled) {
-					StabilizeTask.logger
-							.info("Nothing to stabilize, as successor is null");
+					StabilizeTask.logger.info("Nothing to stabilize, as successor is null");
 					return;
 				}
 
@@ -118,46 +96,29 @@ final class StabilizeTask implements Runnable {
 					/*
 					 * NOTIFYING successor.
 					 */
-					mySuccessorsPredecessorAndSuccessorList = successor
-							.notify(this.parent);
+					mySuccessorsPredecessorAndSuccessorList = successor.notify(this.parent);
 					if (infoEnabled) {
-						StabilizeTask.logger
-								.info("Received response to notify request from "
-										+ "successor" + successor.getNodeID());
+						StabilizeTask.logger.info("Received response to notify request from " + "successor" + successor.getNodeID());
 					}
 				} catch (CommunicationException e) {
 					if (debugEnabled) {
-						StabilizeTask.logger
-								.debug(
-										"Invocation of notify on node "
-												+ successor.getNodeID()
-												+ " was not successful due to a "
-												+ "communication failure! Successor has "
-												+ "failed during stabilization! "
-												+ "Removing successor!", e);
+						StabilizeTask.logger.debug("Invocation of notify on node " + successor.getNodeID() + " was not successful due to a " + "communication failure! Successor has "
+								+ "failed during stabilization! " + "Removing successor!", e);
 					}
 					this.references.removeReference(successor);
 					return;
 				}
 
 				/*
-				 * 19.06.2007. sven 
-				 * Test if our successor has a different
-				 * predecessor than this node.
+				 * 19.06.2007. sven Test if our successor has a different predecessor than this node.
 				 */
-				if ((mySuccessorsPredecessorAndSuccessorList.size() > 0)
-						&& (mySuccessorsPredecessorAndSuccessorList.get(0) != null)) {
-					if (!this.parent.getNodeID()
-							.equals(mySuccessorsPredecessorAndSuccessorList
-									.get(0).getNodeID())) {
+				if ((mySuccessorsPredecessorAndSuccessorList.size() > 0) && (mySuccessorsPredecessorAndSuccessorList.get(0) != null)) {
+					if (!this.parent.getNodeID().equals(mySuccessorsPredecessorAndSuccessorList.get(0).getNodeID())) {
 						/*
-						 * If it does not know us, we have to fetch all entries
-						 * relevant for us.
+						 * If it does not know us, we have to fetch all entries relevant for us.
 						 */
-						RefsAndEntries refsAndEntries = successor
-								.notifyAndCopyEntries(this.parent);
-						mySuccessorsPredecessorAndSuccessorList = refsAndEntries
-								.getRefs();
+						RefsAndEntries refsAndEntries = successor.notifyAndCopyEntries(this.parent);
+						mySuccessorsPredecessorAndSuccessorList = refsAndEntries.getRefs();
 						/*
 						 * and have to store them locally
 						 */
@@ -173,13 +134,11 @@ final class StabilizeTask implements Runnable {
 					}
 				}
 				if (infoEnabled) {
-					StabilizeTask.logger.info("Invocation of notify on node "
-							+ successor.getNodeID() + " was successful");
+					StabilizeTask.logger.info("Invocation of notify on node " + successor.getNodeID() + " was successful");
 				}
 			}
 		} catch (Exception e) {
-			StabilizeTask.logger.warn(
-					"Unexpected Exception caught in StabilizeTask!", e);
+			StabilizeTask.logger.warn("Unexpected Exception caught in StabilizeTask!", e);
 			e.printStackTrace();
 		}
 	}

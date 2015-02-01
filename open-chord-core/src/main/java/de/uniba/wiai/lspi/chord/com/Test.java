@@ -1,28 +1,12 @@
 /***************************************************************************
- *                                                                         *
- *                             Test.java                                *
- *                            -------------------                          *
- *   date                 : 26.02.2008, 13:37:22                               *
- *   copyright            : (C) 2004-2008 Distributed and                  *
- *                              Mobile Systems Group                       *
- *                              Lehrstuhl fuer Praktische Informatik       *
- *                              Universitaet Bamberg                       *
- *                              http://www.uni-bamberg.de/pi/              *
- *   email                : {sven.kaffille}@uni-bamberg.de                 *
- *                                                                         *
- *                                                                         *
+ * * Test.java * ------------------- * date : 26.02.2008, 13:37:22 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer
+ * Praktische Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : {sven.kaffille}@uni-bamberg.de * * *
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   A copy of the license can be found in the license.txt file supplied   *
- *   with this software or at: http://www.gnu.org/copyleft/gpl.html        *
- *                                                                         *
+ * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
+ * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
  ***************************************************************************/
 package de.uniba.wiai.lspi.chord.com;
 
@@ -45,8 +29,7 @@ public class Test {
 
 	static final String URL2 = "ocrmi://localhost/";
 
-	public static void main(String[] args) throws MalformedURLException,
-			CommunicationException {
+	public static void main(String[] args) throws MalformedURLException, CommunicationException {
 		PropertiesLoader.loadPropertyFile();
 		try {
 			if (args[0] != null) {
@@ -117,8 +100,7 @@ public class Test {
 
 			proxy.notifyAndCopyEntries(node);
 			end = System.currentTimeMillis();
-			System.out.println("notifyAndCopyEntries took " + (end - start)
-					+ "ms");
+			System.out.println("notifyAndCopyEntries took " + (end - start) + "ms");
 			millis.add((end - start));
 
 			start = System.currentTimeMillis();
@@ -139,8 +121,7 @@ public class Test {
 				total += time;
 				calls++;
 			}
-			System.out
-					.println("Average duration of a call: " + (total / calls));
+			System.out.println("Average duration of a call: " + (total / calls));
 
 			proxy.disconnect();
 
@@ -173,37 +154,31 @@ public class Test {
 		}
 
 		@Override
-		public void insertEntry(Entry entryToInsert)
-				throws CommunicationException {
+		public void insertEntry(Entry entryToInsert) throws CommunicationException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void insertReplicas(Set<Entry> entries)
-				throws CommunicationException {
+		public void insertReplicas(Set<Entry> entries) throws CommunicationException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void leavesNetwork(Node predecessor)
-				throws CommunicationException {
+		public void leavesNetwork(Node predecessor) throws CommunicationException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public List<Node> notify(Node potentialPredecessor)
-				throws CommunicationException {
+		public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 			return new LinkedList<Node>();
 		}
 
 		@Override
-		public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor)
-				throws CommunicationException {
-			return new RefsAndEntries(new LinkedList<Node>(),
-					new HashSet<Entry>());
+		public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
+			return new RefsAndEntries(new LinkedList<Node>(), new HashSet<Entry>());
 		}
 
 		@Override
@@ -213,15 +188,13 @@ public class Test {
 		}
 
 		@Override
-		public void removeEntry(Entry entryToRemove)
-				throws CommunicationException {
+		public void removeEntry(Entry entryToRemove) throws CommunicationException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void removeReplicas(ID sendingNode, Set<Entry> replicasToRemove)
-				throws CommunicationException {
+		public void removeReplicas(ID sendingNode, Set<Entry> replicasToRemove) throws CommunicationException {
 			// TODO Auto-generated method stub
 
 		}

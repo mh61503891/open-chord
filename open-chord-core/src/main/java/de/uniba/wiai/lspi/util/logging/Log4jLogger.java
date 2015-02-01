@@ -1,27 +1,12 @@
 /***************************************************************************
- *                                                                         *
- *                             Log4jLogger.java                            *
- *                            -------------------                          *
- *   date                 : 26. März 2004, 12:37                           *
- *   copyright            : (C) 2004 Distributed and Mobile Systems Group  *
- *                              Lehrstuhl fuer Praktische Informatik       *
- *                              Universitaet Bamberg                       *
- *                              http://www.uni-bamberg.de/pi/              *
- *   email                : {jens.bruhn|sven.kaffille}@uni-bamberg.de *
- *                                                                         *
- *                                                                         *
+ * * Log4jLogger.java * ------------------- * date : 26. Mï¿½rz 2004, 12:37 * copyright : (C) 2004 Distributed and Mobile Systems Group * Lehrstuhl fuer
+ * Praktische Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : {jens.bruhn|sven.kaffille}@uni-bamberg.de * * *
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   A copy of the license can be found in the license.txt file supplied   *
- *   with this software or at: http://www.gnu.org/copyleft/gpl.html        *
- *                                                                         *
+ * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
+ * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
  ***************************************************************************/
 
 package de.uniba.wiai.lspi.util.logging;
@@ -33,25 +18,17 @@ import java.io.ObjectOutputStream;
 import org.apache.log4j.Level;
 
 /**
- * This is the standard logger for this framework.
- * 
- * It uses <a href="http://logging.apache.org/log4j/docs/">log4j </a> for
- * logging.
- * 
- * <br/>To configure this logger you have to set the system property
- * log4j.properties.file that points to a file containing log4j properties.
- * 
- * See log4j manual for details.
- * 
- * If the file cannot be found logging is set to ON for all classes.
- * 
+ * This is the standard logger for this framework. It uses <a href="http://logging.apache.org/log4j/docs/">log4j </a> for logging. <br/>
+ * To configure this logger you have to set the system property log4j.properties.file that points to a file containing log4j properties. See log4j manual for
+ * details. If the file cannot be found logging is set to ON for all classes.
+ *
  * @author sven
  * @version 1.0.5
  */
 public class Log4jLogger extends Logger {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6061557202317126907L;
 
@@ -66,8 +43,7 @@ public class Log4jLogger extends Logger {
 	private transient org.apache.log4j.Logger logger = null;
 
 	/**
-	 * Name of property to set the reference to the property file containing
-	 * log4j properties.
+	 * Name of property to set the reference to the property file containing log4j properties.
 	 */
 	public final static String PROPERTIES_FILE_PROPERTY = "log4j.properties.file";
 
@@ -78,7 +54,7 @@ public class Log4jLogger extends Logger {
 
 	/**
 	 * Creates a new instance of Log4JLogger
-	 * 
+	 *
 	 * @param _class
 	 */
 	public Log4jLogger(String _class) {
@@ -98,11 +74,9 @@ public class Log4jLogger extends Logger {
 			boolean usefile = false;
 			java.net.URL configURL = null;
 			try {
-				configURL = ClassLoader.getSystemClassLoader().getResource(
-						System.getProperty(PROPERTIES_FILE_PROPERTY));
+				configURL = ClassLoader.getSystemClassLoader().getResource(System.getProperty(PROPERTIES_FILE_PROPERTY));
 				if (configURL == null) {
-					java.io.File f = new java.io.File(System
-							.getProperty(PROPERTIES_FILE_PROPERTY));
+					java.io.File f = new java.io.File(System.getProperty(PROPERTIES_FILE_PROPERTY));
 					usefile = f.exists();
 					configURL = f.toURL();
 				} else {
@@ -112,47 +86,27 @@ public class Log4jLogger extends Logger {
 				usefile = false;
 			}
 			if (usefile) {
-				System.out.println("[" + Thread.currentThread().getName()
-						+ "] " + "INFO " + Log4jLogger.class.getName()
-						+ " - Configuring log4j with '"
-						+ System.getProperty(PROPERTIES_FILE_PROPERTY) + "'.");
+				System.out.println("[" + Thread.currentThread().getName() + "] " + "INFO " + Log4jLogger.class.getName() + " - Configuring log4j with '" + System.getProperty(PROPERTIES_FILE_PROPERTY)
+						+ "'.");
 				try {
-					if (System.getProperty(PROPERTIES_FILE_PROPERTY)
-							.toLowerCase().endsWith(".xml")) {
-						org.apache.log4j.xml.DOMConfigurator
-								.configure(configURL);
+					if (System.getProperty(PROPERTIES_FILE_PROPERTY).toLowerCase().endsWith(".xml")) {
+						org.apache.log4j.xml.DOMConfigurator.configure(configURL);
 					} else // usual properties file
 					{
-						org.apache.log4j.PropertyConfigurator
-								.configure(configURL);
+						org.apache.log4j.PropertyConfigurator.configure(configURL);
 					}
-					System.out.println("[" + Thread.currentThread().getName()
-							+ "] " + "INFO " + Log4jLogger.class.getName()
-							+ " - log4j configured with '"
-							+ System.getProperty(PROPERTIES_FILE_PROPERTY)
-							+ "'.");
+					System.out.println("[" + Thread.currentThread().getName() + "] " + "INFO " + Log4jLogger.class.getName() + " - log4j configured with '"
+							+ System.getProperty(PROPERTIES_FILE_PROPERTY) + "'.");
 					Logger.getLogger(Logger.class).debug("Logger initialized.");
 				} catch (Throwable t) {
-					System.out.println("[" + Thread.currentThread().getName()
-							+ "] " + "ERROR " + Log4jLogger.class.getName()
-							+ " - log4j could not be configured with '"
-							+ System.getProperty(PROPERTIES_FILE_PROPERTY)
-							+ "'.");
+					System.out.println("[" + Thread.currentThread().getName() + "] " + "ERROR " + Log4jLogger.class.getName() + " - log4j could not be configured with '"
+							+ System.getProperty(PROPERTIES_FILE_PROPERTY) + "'.");
 				}
 			} else {
 				// no log file was found.
-				System.out
-						.println("["
-								+ Thread.currentThread().getName()
-								+ "] "
-								+ "INFO "
-								+ Log4jLogger.class.getName()
-								+ " - Could not find log4j properties file with filename '"
-								+ System.getProperty(PROPERTIES_FILE_PROPERTY)
-								+ "'.");
-				System.out.println("[" + Thread.currentThread().getName()
-						+ "] " + "INFO " + Log4jLogger.class.getName()
-						+ " - Logging is On.");
+				System.out.println("[" + Thread.currentThread().getName() + "] " + "INFO " + Log4jLogger.class.getName() + " - Could not find log4j properties file with filename '"
+						+ System.getProperty(PROPERTIES_FILE_PROPERTY) + "'.");
+				System.out.println("[" + Thread.currentThread().getName() + "] " + "INFO " + Log4jLogger.class.getName() + " - Logging is On.");
 				// configure with basic configurator
 				org.apache.log4j.BasicConfigurator.configure();
 				// and set logging to off.
@@ -232,8 +186,7 @@ public class Log4jLogger extends Logger {
 		}
 	}
 
-	private void readObject(ObjectInputStream inputStream)
-			throws ClassNotFoundException, IOException {
+	private void readObject(ObjectInputStream inputStream) throws ClassNotFoundException, IOException {
 		inputStream.defaultReadObject();
 		this.logger = org.apache.log4j.Logger.getLogger(super.name);
 		if (!configured) {
@@ -241,8 +194,7 @@ public class Log4jLogger extends Logger {
 		}
 	}
 
-	private void writeObject(ObjectOutputStream outputStream)
-			throws IOException {
+	private void writeObject(ObjectOutputStream outputStream) throws IOException {
 		outputStream.defaultWriteObject();
 	}
 

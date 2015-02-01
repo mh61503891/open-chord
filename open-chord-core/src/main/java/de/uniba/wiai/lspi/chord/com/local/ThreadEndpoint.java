@@ -1,29 +1,12 @@
 /***************************************************************************
- *                                                                         *
- *                            ThreadEndpoint.java                          *
- *                            -------------------                          *
- *   date                 : 12.08.2004                                     *
- *   copyright            : (C) 2004-2008 Distributed and                  *
- *                              Mobile Systems Group                       *
- *                              Lehrstuhl fuer Praktische Informatik       *
- *                              Universitaet Bamberg                       *
- *                              http://www.uni-bamberg.de/pi/              *
- *   email                : sven.kaffille@uni-bamberg.de                   *
- *                          karsten.loesing@uni-bamberg.de                 *
- *                                                                         *
- *                                                                         *
+ * * ThreadEndpoint.java * ------------------- * date : 12.08.2004 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer
+ * Praktische Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   A copy of the license can be found in the license.txt file supplied   *
- *   with this software or at: http://www.gnu.org/copyleft/gpl.html        *
- *                                                                         *
+ * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
+ * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
  ***************************************************************************/
 
 package de.uniba.wiai.lspi.chord.com.local;
@@ -45,9 +28,8 @@ import de.uniba.wiai.lspi.chord.service.impl.ChordImpl;
 import de.uniba.wiai.lspi.util.logging.Logger;
 
 /**
- * This represents the {@link Endpoint} for the protocol that can be used to
- * build a (local) chord network within one JVM.
- * 
+ * This represents the {@link Endpoint} for the protocol that can be used to build a (local) chord network within one JVM.
+ *
  * @author sven
  * @version 1.0.5
  */
@@ -69,38 +51,33 @@ public final class ThreadEndpoint extends Endpoint {
 	protected final Registry registry;
 
 	/**
-	 * Object to synchronize threads at. Used to block and wake up threads that
-	 * are waiting for this endpoint to get into a state.
+	 * Object to synchronize threads at. Used to block and wake up threads that are waiting for this endpoint to get into a state.
 	 */
 	private Object lock = new Object();
 
 	/**
-	 * {@link List}of {@link InvocationListener listeners}that want to be
-	 * notified if a method is invoked on this endpoint.
+	 * {@link List}of {@link InvocationListener listeners}that want to be notified if a method is invoked on this endpoint.
 	 */
 	protected List<InvocationListener> invocationListeners = null;
 
 	/**
 	 * Creates a new Endpoint for communication via Java Threads.
-	 * 
+	 *
 	 * @param node1
 	 *            The {@link Node}this endpoint invocates methods on.
 	 * @param url1
-	 *            The {@link URL}of this endpoint. The hostname of url is the
-	 *            name of the node.
+	 *            The {@link URL}of this endpoint. The hostname of url is the name of the node.
 	 */
 	public ThreadEndpoint(Node node1, URL url1) {
 		super(node1, url1);
-		this.logger = Logger.getLogger(ThreadEndpoint.class.getName() + "."
-				+ node1.getNodeID());
+		this.logger = Logger.getLogger(ThreadEndpoint.class.getName() + "." + node1.getNodeID());
 		this.invocationListeners = new LinkedList<InvocationListener>();
 		this.registry = Registry.getRegistryInstance();
 		this.logger.info(this + " initialised.");
 	}
 
 	/**
-	 * @return Implementation of {@link Node#notify(Node)}. See documentation
-	 *         of {@link Node}.
+	 * @return Implementation of {@link Node#notify(Node)}. See documentation of {@link Node}.
 	 */
 	public ID getNodeID() {
 		return this.node.getNodeID();
@@ -114,8 +91,7 @@ public final class ThreadEndpoint extends Endpoint {
 		// synchronized (this.invocationListeners) {
 		this.invocationListeners.add(listener);
 		// }
-		this.logger.debug("No. of invocation listeners "
-				+ this.invocationListeners.size());
+		this.logger.debug("No. of invocation listeners " + this.invocationListeners.size());
 	}
 
 	/**
@@ -148,14 +124,12 @@ public final class ThreadEndpoint extends Endpoint {
 		this.notifyInvocationListeners(InvocationListener.FIND_SUCCESSOR);
 		Node n = this.node.findSuccessor(key);
 		if (n == this.node) {
-			this.logger
-					.debug("Returned node is local node. Converting to 'remote' reference. ");
+			this.logger.debug("Returned node is local node. Converting to 'remote' reference. ");
 			ThreadProxy t = new ThreadProxy(this.url, this.url);
 			t.reSetNodeID(n.getNodeID());
 			n = t;
 		}
-		this
-				.notifyInvocationListenersFinished(InvocationListener.FIND_SUCCESSOR);
+		this.notifyInvocationListenersFinished(InvocationListener.FIND_SUCCESSOR);
 		return n;
 	}
 
@@ -187,12 +161,10 @@ public final class ThreadEndpoint extends Endpoint {
 
 	/**
 	 * @param potentialPredecessor
-	 * @return Implementation of {@link Node#notify(Node)}. See documentation
-	 *         of {@link Node}.
+	 * @return Implementation of {@link Node#notify(Node)}. See documentation of {@link Node}.
 	 * @throws CommunicationException
 	 */
-	public List<Node> notify(Node potentialPredecessor)
-			throws CommunicationException {
+	public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		this.checkIfCrashed();
 		this.waitFor(Endpoint.LISTENING);
 		this.notifyInvocationListeners(InvocationListener.NOTIFY);
@@ -204,8 +176,7 @@ public final class ThreadEndpoint extends Endpoint {
 			if (current == this.node) {
 				n.remove(current);
 
-				this.logger
-						.debug("Returned node is local node. Converting to 'remote' reference. ");
+				this.logger.debug("Returned node is local node. Converting to 'remote' reference. ");
 				n.add(new ThreadProxy(this.url, this.url));
 			}
 		}
@@ -234,8 +205,7 @@ public final class ThreadEndpoint extends Endpoint {
 		this.waitFor(Endpoint.ACCEPT_ENTRIES);
 		this.notifyInvocationListeners(InvocationListener.RETRIEVE_ENTRIES);
 		Set<Entry> s = this.node.retrieveEntries(id);
-		this
-				.notifyInvocationListenersFinished(InvocationListener.RETRIEVE_ENTRIES);
+		this.notifyInvocationListenersFinished(InvocationListener.RETRIEVE_ENTRIES);
 		return s;
 	}
 
@@ -247,8 +217,7 @@ public final class ThreadEndpoint extends Endpoint {
 		this.checkIfCrashed();
 		this.notifyInvocationListeners(InvocationListener.LEAVES_NETWORK);
 		this.node.leavesNetwork(predecessor);
-		this
-				.notifyInvocationListenersFinished(InvocationListener.LEAVES_NETWORK);
+		this.notifyInvocationListenersFinished(InvocationListener.LEAVES_NETWORK);
 	}
 
 	/**
@@ -256,62 +225,53 @@ public final class ThreadEndpoint extends Endpoint {
 	 * @param entriesToRemove
 	 * @throws CommunicationException
 	 */
-	public void removeReplicas(ID sendingNodeID, Set<Entry> entriesToRemove)
-			throws CommunicationException {
+	public void removeReplicas(ID sendingNodeID, Set<Entry> entriesToRemove) throws CommunicationException {
 		this.checkIfCrashed();
 		this.waitFor(Endpoint.LISTENING);
 		this.notifyInvocationListeners(InvocationListener.REMOVE_REPLICAS);
 		this.node.removeReplicas(sendingNodeID, entriesToRemove);
-		this
-				.notifyInvocationListenersFinished(InvocationListener.REMOVE_REPLICAS);
+		this.notifyInvocationListenersFinished(InvocationListener.REMOVE_REPLICAS);
 	}
 
 	/**
 	 * @param entries
 	 * @throws CommunicationException
 	 */
-	public void insertReplicas(Set<Entry> entries)
-			throws CommunicationException {
+	public void insertReplicas(Set<Entry> entries) throws CommunicationException {
 		this.checkIfCrashed();
 		this.waitFor(Endpoint.LISTENING);
 		this.notifyInvocationListeners(InvocationListener.INSERT_REPLICAS);
 		this.node.insertReplicas(entries);
-		this
-				.notifyInvocationListenersFinished(InvocationListener.INSERT_REPLICAS);
+		this.notifyInvocationListenersFinished(InvocationListener.INSERT_REPLICAS);
 	}
 
 	/**
 	 * @param potentialPredecessor
-	 * @return Implementation of {@link Node#notify(Node)}. See documentation
-	 *         of {@link Node}.
+	 * @return Implementation of {@link Node#notify(Node)}. See documentation of {@link Node}.
 	 * @throws CommunicationException
 	 */
-	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor)
-			throws CommunicationException {
+	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.checkIfCrashed();
 		this.waitFor(Endpoint.ACCEPT_ENTRIES);
 		this.notifyInvocationListeners(InvocationListener.NOTIFY_AND_COPY);
-		RefsAndEntries refs = this.node
-				.notifyAndCopyEntries(potentialPredecessor);
+		RefsAndEntries refs = this.node.notifyAndCopyEntries(potentialPredecessor);
 		List<Node> nodes = refs.getRefs();
 
 		for (Node current : nodes) {
 			if (current == this.node) {
 				nodes.remove(current);
 
-				this.logger
-						.debug("Returned node is local node. Converting to 'remote' reference. ");
+				this.logger.debug("Returned node is local node. Converting to 'remote' reference. ");
 				nodes.add(new ThreadProxy(this.url, this.url));
 			}
 		}
-		this
-				.notifyInvocationListenersFinished(InvocationListener.NOTIFY_AND_COPY);
+		this.notifyInvocationListenersFinished(InvocationListener.NOTIFY_AND_COPY);
 		return new RefsAndEntries(nodes, refs.getEntries());
 	}
 
 	/**
 	 * Wait for the endpoint to get into given state.
-	 * 
+	 *
 	 * @param state_
 	 *            The state to wait for.
 	 * @throws CommunicationException
@@ -320,12 +280,10 @@ public final class ThreadEndpoint extends Endpoint {
 		synchronized (this.lock) {
 			while (this.getState() < state_) {
 				try {
-					this.logger.debug(Thread.currentThread()
-							+ " waiting for state: " + state_);
+					this.logger.debug(Thread.currentThread() + " waiting for state: " + state_);
 					this.lock.wait();
 					if (state_ == CRASHED) {
-						throw new CommunicationException(
-								"Connection destroyed!");
+						throw new CommunicationException("Connection destroyed!");
 					}
 				} catch (InterruptedException t) {
 					this.logger.warn("Unexpected exception while waiting!", t);
@@ -346,9 +304,9 @@ public final class ThreadEndpoint extends Endpoint {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.uniba.wiai.lspi.chord.com.Endpoint#openConnections()
 	 */
+	@Override
 	protected void openConnections() {
 		/** state has changed. notify waiting threads */
 		this.logger.debug("openConnections()");
@@ -358,9 +316,9 @@ public final class ThreadEndpoint extends Endpoint {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.uniba.wiai.lspi.chord.com.Endpoint#closeConnections()
 	 */
+	@Override
 	protected void closeConnections() {
 		this.registry.unbind(this);
 		this.registry.removeProxiesInUseBy(this.getURL());
@@ -370,59 +328,49 @@ public final class ThreadEndpoint extends Endpoint {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see de.uniba.wiai.lspi.chord.com.Endpoint#entriesAcceptable()
 	 */
+	@Override
 	protected void entriesAcceptable() {
 		/** state has changed. notify waiting threads */
 		this.notifyWaitingThreads();
 	}
 
 	/**
-	 * Method to emulate a crash of the node that this is the endpoint for. This
-	 * method heavily relise on the internal structure of service layer
-	 * implementation to make it possible to emulate a chord overlay network
-	 * within one JVM.
-	 * 
-	 * This method may cause problems at runtime.
+	 * Method to emulate a crash of the node that this is the endpoint for. This method heavily relise on the internal structure of service layer implementation
+	 * to make it possible to emulate a chord overlay network within one JVM. This method may cause problems at runtime.
 	 */
 	public void crash() {
 		this.logger.debug("crash() invoked!");
 		this.registry.unbind(this);
-		List<ThreadProxy> proxies = this.registry.getProxiesInUseBy(this
-				.getURL());
+		List<ThreadProxy> proxies = this.registry.getProxiesInUseBy(this.getURL());
 		if (proxies != null) {
 			for (ThreadProxy p : proxies) {
 				p.invalidate();
 			}
 		}
-		
+
 		this.registry.removeProxiesInUseBy(this.getURL());
 		this.setState(CRASHED);
 		this.notifyWaitingThreads();
 		/* kill threads of node (gefrickelt) */
 		ChordImpl impl = ChordImplAccess.fetchChordImplOfNode(this.node);
 		Field[] fields = impl.getClass().getDeclaredFields();
-		this.logger.debug(fields.length + " fields obtained from class "
-				+ impl.getClass());
+		this.logger.debug(fields.length + " fields obtained from class " + impl.getClass());
 		for (Field field : fields) {
-			this.logger.debug("Examining field " + field + " of node "
-					+ this.node);
+			this.logger.debug("Examining field " + field + " of node " + this.node);
 			try {
 				if (field.getName().equals("maintenanceTasks")) {
 					field.setAccessible(true);
 
 					Object executor = field.get(impl);
-					this.logger.debug("Shutting down TaskExecutor " + executor
-							+ ".");
-					Method m = executor.getClass().getMethod("shutdown",
-							new Class[0]);
+					this.logger.debug("Shutting down TaskExecutor " + executor + ".");
+					Method m = executor.getClass().getMethod("shutdown", new Class[0]);
 					m.setAccessible(true);
 					m.invoke(executor, new Object[0]);
 				}
 			} catch (Throwable t) {
-				this.logger.warn("Could not kill threads of node " + this.node,
-						t);
+				this.logger.warn("Could not kill threads of node " + this.node, t);
 				t.printStackTrace();
 			}
 		}
@@ -432,12 +380,11 @@ public final class ThreadEndpoint extends Endpoint {
 
 	/**
 	 * Checks if this has crashed.
-	 * 
+	 *
 	 * @throws CommunicationException
 	 */
 	private void checkIfCrashed() throws CommunicationException {
-		if ((this.getState() == CRASHED)
-				|| (this.getState() < Endpoint.LISTENING)) {
+		if ((this.getState() == CRASHED) || (this.getState() < Endpoint.LISTENING)) {
 			this.logger.debug(this + " has crashed. Throwing Exception.");
 			throw new CommunicationException();
 		}
@@ -448,19 +395,18 @@ public final class ThreadEndpoint extends Endpoint {
 	/** ********************************************************** */
 
 	/**
-	 * Overwritten from {@link java.lang.Object}. Two ThreadEndpoints A and B
-	 * are equal if they are endpoints for the node with the same name. (A.name ==
+	 * Overwritten from {@link java.lang.Object}. Two ThreadEndpoints A and B are equal if they are endpoints for the node with the same name. (A.name ==
 	 * B.name).
-	 * 
+	 *
 	 * @param obj
 	 * @return <code>true</code> if this equals the provided <code>obj</code>.
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ThreadEndpoint) {
 			ThreadEndpoint ep = (ThreadEndpoint) obj;
 			URL epURL = ep.getURL();
-			return ((epURL.equals(this.getURL())) && (ep.hashCode() == this
-					.hashCode()));
+			return ((epURL.equals(this.getURL())) && (ep.hashCode() == this.hashCode()));
 		} else {
 			return false;
 		}
@@ -468,9 +414,10 @@ public final class ThreadEndpoint extends Endpoint {
 
 	/**
 	 * Overwritten from {@link java.lang.Object}.
-	 * 
+	 *
 	 * @return Overwritten from {@link java.lang.Object}.
 	 */
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
@@ -478,6 +425,7 @@ public final class ThreadEndpoint extends Endpoint {
 	/**
 	 * Overwritten from {@link java.lang.Object}.
 	 */
+	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("[ThreadEndpoint for node ");

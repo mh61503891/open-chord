@@ -1,29 +1,12 @@
 /***************************************************************************
- *                                                                         *
- *                             SocketProxy.java                            *
- *                            -------------------                          *
- *   date                 : 12.08.2004                                     *
- *   copyright            : (C) 2004-2008 Distributed and                  *
- *                              Mobile Systems Group                       *
- *                              Lehrstuhl fuer Praktische Informatik       *
- *                              Universitaet Bamberg                       *
- *                              http://www.uni-bamberg.de/pi/              *
- *   email                : sven.kaffille@uni-bamberg.de                   *
- *                          karsten.loesing@uni-bamberg.de                 *
- *                                                                         *
- *                                                                         *
+ * * SocketProxy.java * ------------------- * date : 12.08.2004 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer Praktische
+ * Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   A copy of the license can be found in the license.txt file supplied   *
- *   with this software or at: http://www.gnu.org/copyleft/gpl.html        *
- *                                                                         *
+ * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
+ * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
  ***************************************************************************/
 package de.uniba.wiai.lspi.chord.com.socket;
 
@@ -53,10 +36,9 @@ import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.util.logging.Logger;
 
 /**
- * This is the implementation of {@link Proxy} for the socket protocol. This
- * connects to the {@link SocketEndpoint endpoint} of the node it represents by
- * means of <code>Sockets</code>.
- * 
+ * This is the implementation of {@link Proxy} for the socket protocol. This connects to the {@link SocketEndpoint endpoint} of the node it represents by means
+ * of <code>Sockets</code>.
+ *
  * @author sven
  * @version 1.0.5
  */
@@ -68,90 +50,72 @@ public final class SocketProxy extends Proxy implements Runnable {
 	private final static Logger logger = Logger.getLogger(SocketProxy.class);
 
 	/**
-	 * Map of existing proxies. Key: {@link String}, Value: {@link SocketProxy}.
-	 * changed on 21.03.2006 by sven. See documentation of method
+	 * Map of existing proxies. Key: {@link String}, Value: {@link SocketProxy}. changed on 21.03.2006 by sven. See documentation of method
 	 * {@link #createProxyKey(URL, URL)}
-	 * 
 	 */
 	private static Map<String, SocketProxy> proxies = new HashMap<String, SocketProxy>();
 
 	/**
-	 * The {@link URL}of the node that uses this proxy to connect to the node,
-	 * which is represented by this proxy.
-	 * 
+	 * The {@link URL}of the node that uses this proxy to connect to the node, which is represented by this proxy.
 	 */
 	private URL urlOfLocalNode = null;
 
 	/**
-	 * Counter for requests that have been made by this proxy. Also required to
-	 * create unique identifiers for {@link Request requests}.
+	 * Counter for requests that have been made by this proxy. Also required to create unique identifiers for {@link Request requests}.
 	 */
 	private long requestCounter = -1;
 
 	/**
-	 * The socket that provides the connection to the node that this is the
-	 * Proxy for. This is transient as a proxy can be transferred over the
-	 * network. After transfer this socket has to be restored by reconnecting to
-	 * the node.
+	 * The socket that provides the connection to the node that this is the Proxy for. This is transient as a proxy can be transferred over the network. After
+	 * transfer this socket has to be restored by reconnecting to the node.
 	 */
 	private transient Socket mySocket;
 
 	/**
-	 * The {@link ObjectOutputStream}this Proxy writes objects to. This is
-	 * transient as a proxy can be transferred over the network. After transfer
-	 * this stream has to be restored.
+	 * The {@link ObjectOutputStream}this Proxy writes objects to. This is transient as a proxy can be transferred over the network. After transfer this stream
+	 * has to be restored.
 	 */
 	private transient ObjectOutputStream out;
 
 	/**
-	 * The {@link ObjectInputStream}this Proxy reads objects from. This is
-	 * transient as a proxy can be transferred over the network. After transfer
-	 * this stream has to be restored.
+	 * The {@link ObjectInputStream}this Proxy reads objects from. This is transient as a proxy can be transferred over the network. After transfer this stream
+	 * has to be restored.
 	 */
 	private transient ObjectInputStream in;
 
 	/**
-	 * The {@link ObjectInputStream} this Proxy reads objects from. This is
-	 * transient as a proxy can be transferred over the network. After transfer
-	 * this stream has to be restored.
+	 * The {@link ObjectInputStream} this Proxy reads objects from. This is transient as a proxy can be transferred over the network. After transfer this stream
+	 * has to be restored.
 	 */
 	private transient Map<String, Response> responses;
 
 	/**
-	 * {@link Map} where threads are put in that are waiting for a repsonse.
-	 * Key: identifier of the request (same as for the response). Value: The
-	 * Thread itself.
+	 * {@link Map} where threads are put in that are waiting for a repsonse. Key: identifier of the request (same as for the response). Value: The Thread
+	 * itself.
 	 */
 	private transient Map<String, WaitingThread> waitingThreads;
 
 	/**
-	 * This indicates that an exception occured while waiting for responses and
-	 * that the connection to the {@link Node node}, that this is the proxy
-	 * for, could not be reestablished.
+	 * This indicates that an exception occured while waiting for responses and that the connection to the {@link Node node}, that this is the proxy for, could
+	 * not be reestablished.
 	 */
 	private volatile boolean disconnected = false;
 
 	/**
-	 * Establishes a connection from <code>urlOfLocalNode</code> to
-	 * <code>url</code>. The connection is represented by the returned
-	 * <code>SocketProxy</code>.
-	 * 
+	 * Establishes a connection from <code>urlOfLocalNode</code> to <code>url</code>. The connection is represented by the returned <code>SocketProxy</code>.
+	 *
 	 * @param url
 	 *            The {@link URL} to connect to.
 	 * @param urlOfLocalNode
 	 *            {@link URL} of local node that establishes the connection.
-	 * @return <code>SocketProxy</code> representing the established
-	 *         connection.
+	 * @return <code>SocketProxy</code> representing the established connection.
 	 * @throws CommunicationException
-	 *             Thrown if establishment of connection to <code>url</code>
-	 *             failed.
+	 *             Thrown if establishment of connection to <code>url</code> failed.
 	 */
-	public static SocketProxy create(URL urlOfLocalNode, URL url)
-			throws CommunicationException {
+	public static SocketProxy create(URL urlOfLocalNode, URL url) throws CommunicationException {
 		synchronized (proxies) {
 			/*
-			 * added on 21.03.2006 by sven. See documentation of method
-			 * createProxyKey(URL, URL);
+			 * added on 21.03.2006 by sven. See documentation of method createProxyKey(URL, URL);
 			 */
 			String proxyKey = SocketProxy.createProxyKey(urlOfLocalNode, url);
 			logger.debug("Known proxies " + SocketProxy.proxies.keySet());
@@ -168,9 +132,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * Closes all outgoing connections to other peers. Allows the local peer to
-	 * shutdown cleanly.
-	 * 
+	 * Closes all outgoing connections to other peers. Allows the local peer to shutdown cleanly.
 	 */
 	static void shutDownAll() {
 		Set<String> keys = proxies.keySet();
@@ -181,11 +143,9 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * Creates a <code>SocketProxy</code> representing the connection from
-	 * <code>urlOfLocalNode</code> to <code>url</code>. The connection is
-	 * established when the first (remote) invocation with help of the
-	 * <code>SocketProxy</code> occurs.
-	 * 
+	 * Creates a <code>SocketProxy</code> representing the connection from <code>urlOfLocalNode</code> to <code>url</code>. The connection is established when
+	 * the first (remote) invocation with help of the <code>SocketProxy</code> occurs.
+	 *
 	 * @param url
 	 *            The {@link URL} of the remote node.
 	 * @param urlOfLocalNode
@@ -197,8 +157,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	protected static SocketProxy create(URL url, URL urlOfLocalNode, ID nodeID) {
 		synchronized (proxies) {
 			/*
-			 * added on 21.03.2006 by sven. See documentation of method
-			 * createProxyKey(String, String);
+			 * added on 21.03.2006 by sven. See documentation of method createProxyKey(String, String);
 			 */
 			String proxyKey = SocketProxy.createProxyKey(urlOfLocalNode, url);
 			logger.debug("Known proxies " + SocketProxy.proxies.keySet());
@@ -215,20 +174,12 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * Method that creates a unique key for a SocketProxy to be stored in
-	 * {@link #proxies}.
-	 * 
-	 * This is important for the methods {@link #create(URL, URL)},
-	 * {@link #create(URL, URL, ID)}, and {@link #disconnect()}, so that
-	 * socket communication also works when it is used within one JVM.
-	 * 
-	 * Added by sven 21.03.2006, as before SocketProxy were stored in
-	 * {@link #proxies} with help of their remote URL as key, so that they were
-	 * a kind of singleton for that URL. But the key has to consist of the URL
-	 * of the local peer, that uses the proxy, and the remote URL as
-	 * SocketProxies must only be (kind of) a singleton per local and remote
-	 * URL.
-	 * 
+	 * Method that creates a unique key for a SocketProxy to be stored in {@link #proxies}. This is important for the methods {@link #create(URL, URL)},
+	 * {@link #create(URL, URL, ID)}, and {@link #disconnect()}, so that socket communication also works when it is used within one JVM. Added by sven
+	 * 21.03.2006, as before SocketProxy were stored in {@link #proxies} with help of their remote URL as key, so that they were a kind of singleton for that
+	 * URL. But the key has to consist of the URL of the local peer, that uses the proxy, and the remote URL as SocketProxies must only be (kind of) a singleton
+	 * per local and remote URL.
+	 *
 	 * @param localURL
 	 * @param remoteURL
 	 * @return The key to store the SocketProxy
@@ -239,7 +190,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 
 	/**
 	 * Corresponding constructor to factory method {@link #create(URL, URL, ID)}.
-	 * 
+	 *
 	 * @see #create(URL, URL, ID)
 	 * @param url
 	 * @param urlOfLocalNode1
@@ -256,18 +207,16 @@ public final class SocketProxy extends Proxy implements Runnable {
 
 	/**
 	 * Corresponding constructor to factory method {@link #create(URL, URL)}.
-	 * 
+	 *
 	 * @see #create(URL, URL)
 	 * @param url
 	 * @param urlOfLocalNode1
 	 * @throws CommunicationException
 	 */
-	private SocketProxy(URL url, URL urlOfLocalNode1)
-			throws CommunicationException {
+	private SocketProxy(URL url, URL urlOfLocalNode1) throws CommunicationException {
 		super(url);
 		if (url == null || urlOfLocalNode1 == null) {
-			throw new IllegalArgumentException(
-					"URLs must not be null!");
+			throw new IllegalArgumentException("URLs must not be null!");
 		}
 		this.urlOfLocalNode = urlOfLocalNode1;
 		this.initializeNodeID();
@@ -275,35 +224,29 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * Private method to send requests over the socket. This method is
-	 * synchronized to ensure that no other thread concurrently accesses the
-	 * {@link ObjectOutputStream output stream}<code>out</code> while sending
-	 * {@link Request request}.
-	 * 
+	 * Private method to send requests over the socket. This method is synchronized to ensure that no other thread concurrently accesses the
+	 * {@link ObjectOutputStream output stream}<code>out</code> while sending {@link Request request}.
+	 *
 	 * @param request
 	 *            The {@link Request}to be sent.
 	 * @throws CommunicationException
 	 *             while writing to {@link ObjectOutputStream output stream}.
 	 */
-	private synchronized void send(Request request)
-			throws CommunicationException {
+	private synchronized void send(Request request) throws CommunicationException {
 		try {
 			logger.debug("Sending request " + request.getReplyWith());
 			this.out.writeObject(request);
 			this.out.flush();
 			this.out.reset();
 		} catch (IOException e) {
-			throw new CommunicationException("Could not connect to node "
-					+ this.nodeURL, e);
+			throw new CommunicationException("Could not connect to node " + this.nodeURL, e);
 		}
 	}
 
 	/**
-	 * Private method to create an identifier that enables this to associate a
-	 * {@link Response response}with a {@link Request request}made before.
-	 * This method is synchronized to protect {@link #requestCounter}from race
-	 * conditions.
-	 * 
+	 * Private method to create an identifier that enables this to associate a {@link Response response}with a {@link Request request}made before. This method
+	 * is synchronized to protect {@link #requestCounter}from race conditions.
+	 *
 	 * @param methodIdentifier
 	 *            Integer identifying the method this method is called from.
 	 * @return Unique Identifier for the request.
@@ -323,33 +266,27 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * Called in a method that is delegated to the {@link Node node}, that this
-	 * is the proxy for. This method blocks the thread that calls the particular
-	 * method until a {@link Response response} is received.
-	 * 
+	 * Called in a method that is delegated to the {@link Node node}, that this is the proxy for. This method blocks the thread that calls the particular method
+	 * until a {@link Response response} is received.
+	 *
 	 * @param request
 	 * @return The {@link Response} for <code>request</code>.
 	 * @throws CommunicationException
 	 */
-	private Response waitForResponse(Request request)
-			throws CommunicationException {
+	private Response waitForResponse(Request request) throws CommunicationException {
 
 		String responseIdentifier = request.getReplyWith();
 		Response response = null;
-		logger.debug("Trying to wait for response with identifier "
-				+ responseIdentifier + " for method "
-				+ MethodConstants.getMethodName(request.getRequestType()));
+		logger.debug("Trying to wait for response with identifier " + responseIdentifier + " for method " + MethodConstants.getMethodName(request.getRequestType()));
 
 		synchronized (this.responses) {
 			logger.debug("No of responses " + this.responses.size());
 			/* Test if we got disconnected while waiting for lock on object */
 			if (this.disconnected) {
-				throw new CommunicationException("Connection to remote host "
-						+ " is broken down. ");
+				throw new CommunicationException("Connection to remote host " + " is broken down. ");
 			}
 			/*
-			 * Test if response is already available (Maybe response arrived
-			 * before we reached this point).
+			 * Test if response is already available (Maybe response arrived before we reached this point).
 			 */
 			response = this.responses.remove(responseIdentifier);
 			if (response != null) {
@@ -369,8 +306,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 					this.responses.wait();
 				} catch (InterruptedException e) {
 					/*
-					 * does not matter as this is intended Thread is interrupted
-					 * if response arrives
+					 * does not matter as this is intended Thread is interrupted if response arrives
 					 */
 				}
 			}
@@ -380,25 +316,19 @@ public final class SocketProxy extends Proxy implements Runnable {
 			this.waitingThreads.remove(responseIdentifier);
 			/* try to get the response if available */
 			response = this.responses.remove(responseIdentifier);
-			logger.debug("Response for request with identifier "
-					+ responseIdentifier + " for method "
-					+ MethodConstants.getMethodName(request.getRequestType())
-					+ " received.");
+			logger.debug("Response for request with identifier " + responseIdentifier + " for method " + MethodConstants.getMethodName(request.getRequestType()) + " received.");
 			/* if no response availabe */
 			if (response == null) {
 				logger.debug("No response received.");
 				/* we have been disconnected */
 				if (this.disconnected) {
 					logger.info("Connection to remote host lost.");
-					throw new CommunicationException(
-							"Connection to remote host " + " is broken down. ");
+					throw new CommunicationException("Connection to remote host " + " is broken down. ");
 				}
 				/* or time out has elapsed */
 				else {
-					logger.error("There is no result, but we have not been "
-							+ "disconnected. Something went seriously wrong!");
-					throw new CommunicationException(
-							"Did not receive a response!");
+					logger.error("There is no result, but we have not been " + "disconnected. Something went seriously wrong!");
+					throw new CommunicationException("Did not receive a response!");
 				}
 			}
 		}
@@ -406,20 +336,17 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * This method is called by {@link #run()}when it receives a
-	 * {@link Response}. The {@link Thread thread}waiting for response is
-	 * woken up and the response is put into {@link Map responses}.
-	 * 
+	 * This method is called by {@link #run()}when it receives a {@link Response}. The {@link Thread thread}waiting for response is woken up and the response is
+	 * put into {@link Map responses}.
+	 *
 	 * @param response
 	 */
 	private void responseReceived(Response response) {
 		synchronized (this.responses) {
 			/* Try to fetch thread waiting for this response */
 			logger.debug("No of waiting threads " + this.waitingThreads);
-			WaitingThread waitingThread = this.waitingThreads.get(response
-					.getInReplyTo());
-			logger.debug("Response with id " + response.getInReplyTo()
-					+ "received.");
+			WaitingThread waitingThread = this.waitingThreads.get(response.getInReplyTo());
+			logger.debug("Response with id " + response.getInReplyTo() + "received.");
 			/* save response */
 			this.responses.put(response.getInReplyTo(), response);
 			/* if there is a thread waiting for this response */
@@ -434,8 +361,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * Method to indicate that connection to remote {@link Node node} is broken
-	 * down.
+	 * Method to indicate that connection to remote {@link Node node} is broken down.
 	 */
 	private void connectionBrokenDown() {
 		if (this.responses == null) {
@@ -457,24 +383,18 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * Creates a request for the method identified by
-	 * <code>methodIdentifier</code> with the parameters
-	 * <code>parameters</code>. Sets also field
+	 * Creates a request for the method identified by <code>methodIdentifier</code> with the parameters <code>parameters</code>. Sets also field
 	 * {@link Request#getReplyWith()}of created {@link Request request}.
-	 * 
+	 *
 	 * @param methodIdentifier
 	 *            The identifier of the method to request.
 	 * @param parameters
 	 *            The parameters for the request.
 	 * @return The {@link Request request}created.
 	 */
-	private Request createRequest(int methodIdentifier,
-			Serializable[] parameters) {
+	private Request createRequest(int methodIdentifier, Serializable[] parameters) {
 		if (logger.isEnabledFor(DEBUG)) {
-			logger.debug("Creating request for method "
-					+ MethodConstants.getMethodName(methodIdentifier)
-					+ " with parameters "
-					+ java.util.Arrays.deepToString(parameters));
+			logger.debug("Creating request for method " + MethodConstants.getMethodName(methodIdentifier) + " with parameters " + java.util.Arrays.deepToString(parameters));
 		}
 		String responseIdentifier = this.createIdentifier(methodIdentifier);
 		Request request = new Request(methodIdentifier, responseIdentifier);
@@ -488,14 +408,14 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @return The successor of <code>key</code>.
 	 * @throws CommunicationException
 	 */
+	@Override
 	public Node findSuccessor(ID key) throws CommunicationException {
 		this.makeSocketAvailable();
 
 		logger.debug("Trying to find successor for ID " + key);
 
 		/* prepare request for method findSuccessor */
-		Request request = this.createRequest(MethodConstants.FIND_SUCCESSOR,
-				new Serializable[] { key });
+		Request request = this.createRequest(MethodConstants.FIND_SUCCESSOR, new Serializable[] { key });
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -516,16 +436,13 @@ public final class SocketProxy extends Proxy implements Runnable {
 				if (nodeInfo.getNodeURL().equals(this.urlOfLocalNode)) {
 					return Endpoint.getEndpoint(this.urlOfLocalNode).getNode();
 				} else {
-					return create(nodeInfo.getNodeURL(), this.urlOfLocalNode,
-							nodeInfo.getNodeID());
+					return create(nodeInfo.getNodeURL(), this.urlOfLocalNode, nodeInfo.getNodeID());
 				}
 			} catch (ClassCastException e) {
 				/*
-				 * This should not occur as all nodes should have the same
-				 * classes!
+				 * This should not occur as all nodes should have the same classes!
 				 */
-				String message = "Could not understand result! "
-						+ response.getResult();
+				String message = "Could not understand result! " + response.getResult();
 				logger.fatal(message);
 				throw new CommunicationException(message, e);
 			}
@@ -543,8 +460,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 			logger.debug("Trying to get node ID ");
 
 			/* prepare request for method findSuccessor */
-			Request request = this.createRequest(MethodConstants.GET_NODE_ID,
-					new Serializable[0]);
+			Request request = this.createRequest(MethodConstants.GET_NODE_ID, new Serializable[0]);
 			/* send request */
 			try {
 				logger.debug("Trying to send request " + request);
@@ -564,11 +480,9 @@ public final class SocketProxy extends Proxy implements Runnable {
 					this.nodeID = (ID) response.getResult();
 				} catch (ClassCastException e) {
 					/*
-					 * This should not occur as all nodes should have the same
-					 * classes!
+					 * This should not occur as all nodes should have the same classes!
 					 */
-					String message = "Could not understand result! "
-							+ response.getResult();
+					String message = "Could not understand result! " + response.getResult();
 					logger.fatal(message);
 					throw new CommunicationException(message);
 				}
@@ -578,18 +492,15 @@ public final class SocketProxy extends Proxy implements Runnable {
 
 	/**
 	 * @param potentialPredecessor
-	 * @return List of references for the node invoking this method. See
-	 *         {@link Node#notify(Node)}.
+	 * @return List of references for the node invoking this method. See {@link Node#notify(Node)}.
 	 */
-	public List<Node> notify(Node potentialPredecessor)
-			throws CommunicationException {
+	@Override
+	public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		this.makeSocketAvailable();
 
-		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor
-				.getNodeURL(), potentialPredecessor.getNodeID());
+		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getNodeURL(), potentialPredecessor.getNodeID());
 
-		Request request = this.createRequest(MethodConstants.NOTIFY,
-				new Serializable[] { nodeInfoToSend });
+		Request request = this.createRequest(MethodConstants.NOTIFY, new Serializable[] { nodeInfoToSend });
 
 		/* send request to remote node. */
 		try {
@@ -604,23 +515,18 @@ public final class SocketProxy extends Proxy implements Runnable {
 			throw new CommunicationException(response.getFailureReason());
 		} else {
 			try {
-				List<RemoteNodeInfo> references = (List<RemoteNodeInfo>) response
-						.getResult();
+				List<RemoteNodeInfo> references = (List<RemoteNodeInfo>) response.getResult();
 				List<Node> nodes = new LinkedList<Node>();
 				for (RemoteNodeInfo nodeInfo : references) {
 					if (nodeInfo.getNodeURL().equals(this.urlOfLocalNode)) {
-						nodes.add(Endpoint.getEndpoint(this.urlOfLocalNode)
-								.getNode());
+						nodes.add(Endpoint.getEndpoint(this.urlOfLocalNode).getNode());
 					} else {
-						nodes.add(create(nodeInfo.getNodeURL(),
-								this.urlOfLocalNode, nodeInfo.getNodeID()));
+						nodes.add(create(nodeInfo.getNodeURL(), this.urlOfLocalNode, nodeInfo.getNodeID()));
 					}
 				}
 				return nodes;
 			} catch (ClassCastException cce) {
-				throw new CommunicationException(
-						"Could not understand result! " + response.getResult(),
-						cce);
+				throw new CommunicationException("Could not understand result! " + response.getResult(), cce);
 			}
 		}
 	}
@@ -628,6 +534,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	/**
 	 * @throws CommunicationException
 	 */
+	@Override
 	public void ping() throws CommunicationException {
 		this.makeSocketAvailable();
 
@@ -638,8 +545,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 		}
 
 		/* prepare request for method findSuccessor */
-		Request request = this.createRequest(MethodConstants.PING,
-				new Serializable[0]);
+		Request request = this.createRequest(MethodConstants.PING, new Serializable[0]);
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -668,14 +574,14 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @param entry
 	 * @throws CommunicationException
 	 */
+	@Override
 	public void insertEntry(Entry entry) throws CommunicationException {
 		this.makeSocketAvailable();
 
 		logger.debug("Trying to insert entry " + entry + ".");
 
 		/* prepare request for method insertEntry */
-		Request request = this.createRequest(MethodConstants.INSERT_ENTRY,
-				new Serializable[] { entry });
+		Request request = this.createRequest(MethodConstants.INSERT_ENTRY, new Serializable[] { entry });
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -700,15 +606,14 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @param replicas
 	 * @throws CommunicationException
 	 */
-	public void insertReplicas(Set<Entry> replicas)
-			throws CommunicationException {
+	@Override
+	public void insertReplicas(Set<Entry> replicas) throws CommunicationException {
 		this.makeSocketAvailable();
 
 		logger.debug("Trying to insert replicas " + replicas + ".");
 
 		/* prepare request for method insertEntry */
-		Request request = this.createRequest(MethodConstants.INSERT_REPLICAS,
-				new Serializable[] { (Serializable) replicas });
+		Request request = this.createRequest(MethodConstants.INSERT_REPLICAS, new Serializable[] { (Serializable) replicas });
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -733,18 +638,16 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @param predecessor
 	 * @throws CommunicationException
 	 */
+	@Override
 	public void leavesNetwork(Node predecessor) throws CommunicationException {
 		this.makeSocketAvailable();
 
-		logger.debug("Trying to insert notify node that " + predecessor
-				+ " leaves network.");
+		logger.debug("Trying to insert notify node that " + predecessor + " leaves network.");
 
-		RemoteNodeInfo nodeInfo = new RemoteNodeInfo(predecessor.getNodeURL(),
-				predecessor.getNodeID());
+		RemoteNodeInfo nodeInfo = new RemoteNodeInfo(predecessor.getNodeURL(), predecessor.getNodeID());
 
 		/* prepare request for method insertEntry */
-		Request request = this.createRequest(MethodConstants.LEAVES_NETWORK,
-				new Serializable[] { nodeInfo });
+		Request request = this.createRequest(MethodConstants.LEAVES_NETWORK, new Serializable[] { nodeInfo });
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -769,14 +672,14 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @param entry
 	 * @throws CommunicationException
 	 */
+	@Override
 	public void removeEntry(Entry entry) throws CommunicationException {
 		this.makeSocketAvailable();
 
 		logger.debug("Trying to remove entry " + entry + ".");
 
 		/* prepare request for method findSuccessor */
-		Request request = this.createRequest(MethodConstants.REMOVE_ENTRY,
-				new Serializable[] { entry });
+		Request request = this.createRequest(MethodConstants.REMOVE_ENTRY, new Serializable[] { entry });
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -803,15 +706,14 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @param replicas
 	 * @throws CommunicationException
 	 */
-	public void removeReplicas(ID sendingNodeID, Set<Entry> replicas)
-			throws CommunicationException {
+	@Override
+	public void removeReplicas(ID sendingNodeID, Set<Entry> replicas) throws CommunicationException {
 		this.makeSocketAvailable();
 
 		logger.debug("Trying to remove replicas " + replicas + ".");
 
 		/* prepare request for method insertEntry */
-		Request request = this.createRequest(MethodConstants.REMOVE_REPLICAS,
-				new Serializable[] { sendingNodeID, (Serializable) replicas });
+		Request request = this.createRequest(MethodConstants.REMOVE_REPLICAS, new Serializable[] { sendingNodeID, (Serializable) replicas });
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -832,14 +734,14 @@ public final class SocketProxy extends Proxy implements Runnable {
 		}
 	}
 
+	@Override
 	public Set<Entry> retrieveEntries(ID id) throws CommunicationException {
 		this.makeSocketAvailable();
 
 		logger.debug("Trying to retrieve entries for ID " + id);
 
 		/* prepare request for method findSuccessor */
-		Request request = this.createRequest(MethodConstants.RETRIEVE_ENTRIES,
-				new Serializable[] { id });
+		Request request = this.createRequest(MethodConstants.RETRIEVE_ENTRIES, new Serializable[] { id });
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -853,39 +755,30 @@ public final class SocketProxy extends Proxy implements Runnable {
 		Response response = this.waitForResponse(request);
 		logger.debug("Response " + response + " arrived.");
 		if (response.isFailureResponse()) {
-			throw new CommunicationException(response.getFailureReason(),
-					response.getThrowable());
+			throw new CommunicationException(response.getFailureReason(), response.getThrowable());
 		} else {
 			try {
 				Set<Entry> result = (Set<Entry>) response.getResult();
 				return result;
 			} catch (ClassCastException cce) {
-				throw new CommunicationException(
-						"Could not understand result! " + response.getResult());
+				throw new CommunicationException("Could not understand result! " + response.getResult());
 			}
 		}
 	}
 
 	/**
-	 * This method has to be called at first in every method that uses the
-	 * socket to connect to the node this is the proxy for. This method
-	 * establishes the connection if not already done. This method has to be
-	 * called as this proxy can be serialized and the reference to the socket is
-	 * transient. So by calling this method after a transfer the connection to
-	 * the node is reestablished. The same applies for {@link #logger}and
-	 * {@link #responses}.
-	 * 
+	 * This method has to be called at first in every method that uses the socket to connect to the node this is the proxy for. This method establishes the
+	 * connection if not already done. This method has to be called as this proxy can be serialized and the reference to the socket is transient. So by calling
+	 * this method after a transfer the connection to the node is reestablished. The same applies for {@link #logger}and {@link #responses}.
+	 *
 	 * @throws CommunicationException
 	 */
 	private void makeSocketAvailable() throws CommunicationException {
 		if (this.disconnected) {
-			throw new CommunicationException("Connection from "
-					+ this.urlOfLocalNode + " to remote host " + this.nodeURL
-					+ " is broken down. ");
+			throw new CommunicationException("Connection from " + this.urlOfLocalNode + " to remote host " + this.nodeURL + " is broken down. ");
 		}
 
-		logger.debug("makeSocketAvailable() called. "
-				+ "Testing for socket availability");
+		logger.debug("makeSocketAvailable() called. " + "Testing for socket availability");
 
 		if (this.responses == null) {
 			this.responses = new HashMap<String, Response>();
@@ -896,16 +789,13 @@ public final class SocketProxy extends Proxy implements Runnable {
 		if (this.mySocket == null) {
 			try {
 				logger.info("Opening new socket to " + this.nodeURL);
-				this.mySocket = new Socket(this.nodeURL.getHost(), this.nodeURL
-						.getPort());
+				this.mySocket = new Socket(this.nodeURL.getHost(), this.nodeURL.getPort());
 				logger.debug("Socket created: " + this.mySocket);
 				this.mySocket.setSoTimeout(5000);
-				this.out = new ObjectOutputStream(this.mySocket
-						.getOutputStream());
+				this.out = new ObjectOutputStream(this.mySocket.getOutputStream());
 				this.in = new ObjectInputStream(this.mySocket.getInputStream());
 				logger.debug("Sending connection request!");
-				out.writeObject(new Request(MethodConstants.CONNECT,
-						"Initial Connection"));
+				out.writeObject(new Request(MethodConstants.CONNECT, "Initial Connection"));
 				try {
 					// set time out, in case the other side does not answer!
 					Response resp = null;
@@ -919,42 +809,34 @@ public final class SocketProxy extends Proxy implements Runnable {
 					}
 					this.mySocket.setSoTimeout(0);
 					if (timedOut) {
-						throw new CommunicationException(
-								"Connection to remote host timed out!");
+						throw new CommunicationException("Connection to remote host timed out!");
 					}
-					if (resp != null
-							&& resp.getStatus() == Response.REQUEST_SUCCESSFUL) {
-						Thread t = new Thread(this, "SocketProxy_Thread_"
-								+ this.nodeURL);
+					if (resp != null && resp.getStatus() == Response.REQUEST_SUCCESSFUL) {
+						Thread t = new Thread(this, "SocketProxy_Thread_" + this.nodeURL);
 						t.start();
 					} else {
-						throw new CommunicationException(
-								"Establishing connection failed!");
+						throw new CommunicationException("Establishing connection failed!");
 					}
 				} catch (ClassNotFoundException e) {
-					throw new CommunicationException(
-							"Unexpected result received! " + e.getMessage(), e);
+					throw new CommunicationException("Unexpected result received! " + e.getMessage(), e);
 				} catch (ClassCastException e) {
-					throw new CommunicationException(
-							"Unexpected result received! " + e.getMessage(), e);
+					throw new CommunicationException("Unexpected result received! " + e.getMessage(), e);
 				}
 			} catch (UnknownHostException e) {
-				throw new CommunicationException("Unknown host: "
-						+ this.nodeURL.getHost());
+				throw new CommunicationException("Unknown host: " + this.nodeURL.getHost());
 			} catch (IOException ioe) {
-				throw new CommunicationException("Could not set up IO channel "
-						+ "to host " + this.nodeURL.getHost(), ioe);
+				throw new CommunicationException("Could not set up IO channel " + "to host " + this.nodeURL.getHost(), ioe);
 			}
 		}
 		logger.debug("makeSocketAvailable() finished. Socket " + this.mySocket);
 	}
 
 	/**
-	 * Finalization ensures that the socket is closed if this proxy is not
-	 * needed anymore.
-	 * 
+	 * Finalization ensures that the socket is closed if this proxy is not needed anymore.
+	 *
 	 * @throws Throwable
 	 */
+	@Override
 	protected void finalize() throws Throwable {
 		logger.debug("Finalization running.");
 	}
@@ -962,18 +844,16 @@ public final class SocketProxy extends Proxy implements Runnable {
 	/**
 	 * Tells this proxy that it is not needed anymore.
 	 */
+	@Override
 	public void disconnect() {
 
-		logger.info("Destroying connection from " + this.urlOfLocalNode
-				+ " to " + this.nodeURL);
+		logger.info("Destroying connection from " + this.urlOfLocalNode + " to " + this.nodeURL);
 
 		synchronized (proxies) {
 			/*
-			 * added on 21.03.2006 by sven. See documentation of method
-			 * createProxyKey(String, String);
+			 * added on 21.03.2006 by sven. See documentation of method createProxyKey(String, String);
 			 */
-			String proxyKey = SocketProxy.createProxyKey(this.urlOfLocalNode,
-					this.nodeURL);
+			String proxyKey = SocketProxy.createProxyKey(this.urlOfLocalNode, this.nodeURL);
 			Object o = proxies.remove(proxyKey);
 		}
 		this.disconnected = true;
@@ -981,12 +861,10 @@ public final class SocketProxy extends Proxy implements Runnable {
 			if (this.out != null) {
 				try {
 					/*
-					 * notify endpoint this is connected to, about shut down of
-					 * this proxy
+					 * notify endpoint this is connected to, about shut down of this proxy
 					 */
 					logger.debug("Sending shutdown notification to endpoint.");
-					Request request = this.createRequest(
-							MethodConstants.SHUTDOWN, new Serializable[0]);
+					Request request = this.createRequest(MethodConstants.SHUTDOWN, new Serializable[0]);
 					logger.debug("Notification send.");
 					this.out.writeObject(request);
 					this.out.close();
@@ -994,9 +872,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 					logger.debug("OutputStream " + this.out + " closed.");
 				} catch (IOException e) {
 					/* should not occur */
-					logger.debug(this
-							+ ": Exception during closing of output stream "
-							+ this.out, e);
+					logger.debug(this + ": Exception during closing of output stream " + this.out, e);
 				}
 			}
 			if (this.in != null) {
@@ -1006,8 +882,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 					this.in = null;
 				} catch (IOException e) {
 					/* should not occur */
-					logger.debug("Exception during closing of input stream"
-							+ this.in);
+					logger.debug("Exception during closing of input stream" + this.in);
 				}
 			}
 			if (this.mySocket != null) {
@@ -1016,8 +891,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 					this.mySocket.close();
 				} catch (IOException e) {
 					/* should not occur */
-					logger.debug("Exception during closing of socket "
-							+ this.mySocket);
+					logger.debug("Exception during closing of socket " + this.mySocket);
 				}
 				this.mySocket = null;
 			}
@@ -1028,12 +902,9 @@ public final class SocketProxy extends Proxy implements Runnable {
 	}
 
 	/**
-	 * The run methods waits for incoming
-	 * {@link de.uniba.wiai.lspi.chord.com.socket.Response} made by this proxy
-	 * and puts them into a datastructure from where the can be collected by the
-	 * associated method call that made a
-	 * {@link de.uniba.wiai.lspi.chord.com.socket.Request} to the {@link Node},
-	 * that this is the proxy for.
+	 * The run methods waits for incoming {@link de.uniba.wiai.lspi.chord.com.socket.Response} made by this proxy and puts them into a datastructure from where
+	 * the can be collected by the associated method call that made a {@link de.uniba.wiai.lspi.chord.com.socket.Request} to the {@link Node}, that this is the
+	 * proxy for.
 	 */
 	public void run() {
 		while (!this.disconnected) {
@@ -1043,11 +914,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 				this.responseReceived(response);
 			} catch (ClassNotFoundException cnfe) {
 				/* should not occur, as all classes must be locally available */
-				logger
-						.fatal(
-								"ClassNotFoundException occured during deserialization "
-										+ "of response. There is something seriously wrong "
-										+ " here! ", cnfe);
+				logger.fatal("ClassNotFoundException occured during deserialization " + "of response. There is something seriously wrong " + " here! ", cnfe);
 			} catch (IOException e) {
 				if (!this.disconnected) {
 					logger.warn("Could not read response from stream!", e);
@@ -1064,16 +931,14 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @return See {@link Node#notifyAndCopyEntries(Node)}.
 	 * @throws CommunicationException
 	 */
-	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor)
-			throws CommunicationException {
+	@Override
+	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.makeSocketAvailable();
 
-		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor
-				.getNodeURL(), potentialPredecessor.getNodeID());
+		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getNodeURL(), potentialPredecessor.getNodeID());
 
 		/* prepare request for method notifyAndCopyEntries */
-		Request request = this.createRequest(MethodConstants.NOTIFY_AND_COPY,
-				new Serializable[] { nodeInfoToSend });
+		Request request = this.createRequest(MethodConstants.NOTIFY_AND_COPY, new Serializable[] { nodeInfoToSend });
 		/* send request */
 		try {
 			logger.debug("Trying to send request " + request);
@@ -1087,43 +952,38 @@ public final class SocketProxy extends Proxy implements Runnable {
 		Response response = this.waitForResponse(request);
 		logger.debug("Response " + response + " arrived.");
 		if (response.isFailureResponse()) {
-			throw new CommunicationException(response.getFailureReason(),
-					response.getThrowable());
+			throw new CommunicationException(response.getFailureReason(), response.getThrowable());
 		} else {
 			try {
-				RemoteRefsAndEntries result = (RemoteRefsAndEntries) response
-						.getResult();
+				RemoteRefsAndEntries result = (RemoteRefsAndEntries) response.getResult();
 				List<Node> newReferences = new LinkedList<Node>();
 				List<RemoteNodeInfo> references = result.getNodeInfos();
 				for (RemoteNodeInfo nodeInfo : references) {
 					if (nodeInfo.getNodeURL().equals(this.urlOfLocalNode)) {
-						newReferences.add(Endpoint.getEndpoint(
-								this.urlOfLocalNode).getNode());
+						newReferences.add(Endpoint.getEndpoint(this.urlOfLocalNode).getNode());
 					} else {
-						newReferences.add(create(nodeInfo.getNodeURL(),
-								this.urlOfLocalNode, nodeInfo.getNodeID()));
+						newReferences.add(create(nodeInfo.getNodeURL(), this.urlOfLocalNode, nodeInfo.getNodeID()));
 					}
 				}
 				return new RefsAndEntries(newReferences, result.getEntries());
 			} catch (ClassCastException cce) {
-				throw new CommunicationException(
-						"Could not understand result! " + response.getResult());
+				throw new CommunicationException("Could not understand result! " + response.getResult());
 			}
 		}
 	}
 
 	/**
-	 * The string representation of this proxy. Created when {@link #toString()}
-	 * is invoked for the first time.
+	 * The string representation of this proxy. Created when {@link #toString()} is invoked for the first time.
 	 */
 	private String stringRepresentation = null;
 
 	/**
 	 * @return String representation of this.
 	 */
+	@Override
 	public String toString() {
 		if (this.nodeID == null || this.mySocket == null) {
-			return "Unconnected SocketProxy from " + this.urlOfLocalNode + " to " + this.nodeURL; 
+			return "Unconnected SocketProxy from " + this.urlOfLocalNode + " to " + this.nodeURL;
 		}
 		if (this.stringRepresentation == null) {
 			StringBuilder builder = new StringBuilder();
@@ -1143,9 +1003,8 @@ public final class SocketProxy extends Proxy implements Runnable {
 
 	/**
 	 * Wraps a thread, which is waiting for a response.
-	 * 
+	 *
 	 * @author sven
-	 * 
 	 */
 	private static class WaitingThread {
 
@@ -1158,9 +1017,8 @@ public final class SocketProxy extends Proxy implements Runnable {
 		}
 
 		/**
-		 * Returns <code>true</code> when the thread has been woken up by
-		 * invoking {@link #wakeUp()}
-		 * 
+		 * Returns <code>true</code> when the thread has been woken up by invoking {@link #wakeUp()}
+		 *
 		 * @return
 		 */
 		boolean hasBeenWokenUp() {
@@ -1169,16 +1027,15 @@ public final class SocketProxy extends Proxy implements Runnable {
 
 		/**
 		 * Wake up the thread that is waiting for a response.
-		 * 
 		 */
 		void wakeUp() {
 			this.hasBeenWokenUp = true;
 			this.thread.interrupt();
 		}
 
+		@Override
 		public String toString() {
-			return this.thread.toString() + ": Waiting? "
-					+ !this.hasBeenWokenUp();
+			return this.thread.toString() + ": Waiting? " + !this.hasBeenWokenUp();
 		}
 	}
 

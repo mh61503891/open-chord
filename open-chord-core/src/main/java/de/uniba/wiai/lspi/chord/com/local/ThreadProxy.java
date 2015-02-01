@@ -1,31 +1,19 @@
 /***************************************************************************
- *                                                                         *
- *                             ThreadProxy.java                            *
- *                            -------------------                          *
- *   date                 : 12.08.2004                                     *
- *   copyright            : (C) 2004-2008 Distributed and                  *
- *                              Mobile Systems Group                       *
- *                              Lehrstuhl fuer Praktische Informatik       *
- *                              Universitaet Bamberg                       *
- *                              http://www.uni-bamberg.de/pi/              *
- *   email                : sven.kaffille@uni-bamberg.de                   *
- *                          karsten.loesing@uni-bamberg.de                 *
- *                                                                         *
- *                                                                         *
+ * * ThreadProxy.java * ------------------- * date : 12.08.2004 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer Praktische
+ * Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
  ***************************************************************************/
 
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   A copy of the license can be found in the license.txt file supplied   *
- *   with this software or at: http://www.gnu.org/copyleft/gpl.html        *
- *                                                                         *
+ * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
+ * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
+ * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
  ***************************************************************************/
 package de.uniba.wiai.lspi.chord.com.local;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Entry;
@@ -35,25 +23,19 @@ import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.util.logging.Logger;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
- * This class represents a {@link Proxy} for the protocol that allows 
- * to be build a (local) chord network within one JVM. 
- * 
+ * This class represents a {@link Proxy} for the protocol that allows to be build a (local) chord network within one JVM.
+ *
  * @author sven
  * @version 1.0.5
  */
 public final class ThreadProxy extends Proxy {
 
 	/**
-	 * The logger for instances of this. 
+	 * The logger for instances of this.
 	 */
-	private static final Logger logger = Logger
-			.getLogger(ThreadProxy.class.getName());
+	private static final Logger logger = Logger.getLogger(ThreadProxy.class.getName());
 
 	/**
 	 * Reference to the {@link Registry registry}singleton.
@@ -76,12 +58,11 @@ public final class ThreadProxy extends Proxy {
 	protected boolean hasBeenUsed = false;
 
 	/**
-	 * The endpoint, to which this delegates method invocations. 
+	 * The endpoint, to which this delegates method invocations.
 	 */
 	private ThreadEndpoint endpoint = null;
 
 	/**
-	 * 
 	 * @param creatorURL1
 	 * @param url
 	 * @param nodeID1
@@ -94,14 +75,13 @@ public final class ThreadProxy extends Proxy {
 	}
 
 	/**
-	 * Creates a Proxy for the <code>jchordlocal</code> protocol. The host
-	 * name part of {@link URL url}is the name of the node in the
-	 * <code>jchordlocal</code> protocol.
-	 * @param creatorURL1 
-	 * 
+	 * Creates a Proxy for the <code>jchordlocal</code> protocol. The host name part of {@link URL url}is the name of the node in the <code>jchordlocal</code>
+	 * protocol.
+	 *
+	 * @param creatorURL1
 	 * @param url
 	 *            The {@link URL}of the node this proxy represents.
-	 * @throws CommunicationException 
+	 * @throws CommunicationException
 	 */
 	public ThreadProxy(URL creatorURL1, URL url) throws CommunicationException {
 		super(url);
@@ -115,14 +95,14 @@ public final class ThreadProxy extends Proxy {
 		}
 		this.nodeID = endpoint_.getNodeID();
 	}
-	
-	void reSetNodeID(ID id){
-		this.setNodeID(id); 
+
+	void reSetNodeID(ID id) {
+		this.setNodeID(id);
 	}
 
 	/**
 	 * Method to check if this proxy is valid.
-	 * 
+	 *
 	 * @throws CommunicationException
 	 */
 	private void checkValidity() throws CommunicationException {
@@ -145,14 +125,13 @@ public final class ThreadProxy extends Proxy {
 
 		if (!this.hasBeenUsed) {
 			this.hasBeenUsed = true;
-			Registry.getRegistryInstance().addProxyUsedBy(
-					this.creatorURL, this);
+			Registry.getRegistryInstance().addProxyUsedBy(this.creatorURL, this);
 		}
 	}
 
 	/**
 	 * Test if this Proxy is valid.
-	 * 
+	 *
 	 * @return <code>true</code> if this Proxy is valid.
 	 */
 	public boolean isValid() {
@@ -161,7 +140,6 @@ public final class ThreadProxy extends Proxy {
 
 	/**
 	 * Invalidates this proxy.
-	 * 
 	 */
 	public void invalidate() {
 		this.isValid = false;
@@ -169,12 +147,10 @@ public final class ThreadProxy extends Proxy {
 	}
 
 	/**
-	 * Get a reference to the {@link ThreadEndpoint   endpoint} this proxy
-	 * delegates methods to. If there is no endpoint a
-	 * {@link CommunicationException   exception} is thrown.
-	 * 
-	 * @return Reference to the {@link ThreadEndpoint   endpoint} this proxy
-	 *         delegates methods to.
+	 * Get a reference to the {@link ThreadEndpoint endpoint} this proxy delegates methods to. If there is no endpoint a {@link CommunicationException
+	 * exception} is thrown.
+	 *
+	 * @return Reference to the {@link ThreadEndpoint endpoint} this proxy delegates methods to.
 	 * @throws CommunicationException
 	 *             If there is no endpoint this exception is thrown.
 	 */
@@ -186,6 +162,7 @@ public final class ThreadProxy extends Proxy {
 		return ep;
 	}
 
+	@Override
 	public Node findSuccessor(ID key) throws CommunicationException {
 		this.checkValidity();
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -204,6 +181,7 @@ public final class ThreadProxy extends Proxy {
 		}
 	}
 
+	@Override
 	public void insertEntry(Entry entry) throws CommunicationException {
 		this.checkValidity();
 		logger.debug("Trying to execute insert().");
@@ -216,14 +194,16 @@ public final class ThreadProxy extends Proxy {
 		logger.debug("insert() executed");
 	}
 
+	@Override
 	public void removeEntry(Entry entry) throws CommunicationException {
 		this.checkValidity();
 		this.endpoint.removeEntry(entry);
 	}
 
 	/**
-	 * 
+	 *
 	 */
+	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("[ThreadProxy ");
@@ -232,12 +212,11 @@ public final class ThreadProxy extends Proxy {
 		return buffer.toString();
 	}
 
-	public List<Node> notify(Node potentialPredecessor)
-			throws CommunicationException {
+	@Override
+	public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy potentialPredecessorProxy = new ThreadProxy(
-				this.creatorURL, potentialPredecessor.getNodeURL());
+		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getNodeURL());
 
 		logger.debug("Trying to execute notify().");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -261,6 +240,7 @@ public final class ThreadProxy extends Proxy {
 		return Arrays.asList(proxies);
 	}
 
+	@Override
 	public void ping() throws CommunicationException {
 		this.checkValidity();
 		logger.debug("Trying to execute ping().");
@@ -268,6 +248,7 @@ public final class ThreadProxy extends Proxy {
 		this.endpoint.ping();
 	}
 
+	@Override
 	public Set<Entry> retrieveEntries(ID id) throws CommunicationException {
 		this.checkValidity();
 		logger.debug("Trying to execute retrieve().");
@@ -276,20 +257,21 @@ public final class ThreadProxy extends Proxy {
 	}
 
 	/**
-	 * Creates a copy of this. 
-	 * 
-	 * @param creatorUrl The url of the node where this is being copied. 
-	 * @return The copy of this. 
+	 * Creates a copy of this.
+	 *
+	 * @param creatorUrl
+	 *            The url of the node where this is being copied.
+	 * @return The copy of this.
 	 */
 	private ThreadProxy cloneMeAt(URL creatorUrl) {
 		return new ThreadProxy(creatorUrl, this.nodeURL, this.nodeID);
 	}
 
+	@Override
 	public void leavesNetwork(Node predecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy predecessorProxy = new ThreadProxy(this.creatorURL,
-				predecessor.getNodeURL());
+		ThreadProxy predecessorProxy = new ThreadProxy(this.creatorURL, predecessor.getNodeURL());
 
 		logger.debug("Trying to execute leavesNetwork(" + predecessor + ").");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -300,11 +282,10 @@ public final class ThreadProxy extends Proxy {
 		this.endpoint.leavesNetwork(predecessorProxy);
 	}
 
-	public void removeReplicas(ID sendingNodeID, Set<Entry> entriesToRemove)
-			throws CommunicationException {
+	@Override
+	public void removeReplicas(ID sendingNodeID, Set<Entry> entriesToRemove) throws CommunicationException {
 		this.checkValidity();
-		logger.debug("Trying to execute removeReplicas(" + entriesToRemove
-				+ ").");
+		logger.debug("Trying to execute removeReplicas(" + entriesToRemove + ").");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
 		logger.debug("Found endpoint " + this.endpoint);
 		// if (endpoint == null) {
@@ -313,8 +294,8 @@ public final class ThreadProxy extends Proxy {
 		this.endpoint.removeReplicas(sendingNodeID, entriesToRemove);
 	}
 
-	public void insertReplicas(Set<Entry> entries)
-			throws CommunicationException {
+	@Override
+	public void insertReplicas(Set<Entry> entries) throws CommunicationException {
 		this.checkValidity();
 		logger.debug("Trying to execute insertReplicas(" + entries + ").");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -325,12 +306,11 @@ public final class ThreadProxy extends Proxy {
 		this.endpoint.insertReplicas(entries);
 	}
 
-	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor)
-			throws CommunicationException {
+	@Override
+	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy potentialPredecessorProxy = new ThreadProxy(
-				this.creatorURL, potentialPredecessor.getNodeURL());
+		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getNodeURL());
 
 		logger.debug("Trying to execute notifyAndCopyEntries().");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -344,7 +324,7 @@ public final class ThreadProxy extends Proxy {
 	@Override
 	public void disconnect() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
