@@ -125,20 +125,20 @@ final class References {
 		// determine closest preceding reference of finger table
 		Node closestNodeFT = this.fingerTable.getClosestPrecedingNode(key);
 		if (closestNodeFT != null) {
-			foundNodes.put(closestNodeFT.getNodeID(), closestNodeFT);
+			foundNodes.put(closestNodeFT.getID(), closestNodeFT);
 		}
 
 		// determine closest preceding reference of successor list
 		Node closestNodeSL = this.successorList.getClosestPrecedingNode(key);
 		if (closestNodeSL != null) {
-			foundNodes.put(closestNodeSL.getNodeID(), closestNodeSL);
+			foundNodes.put(closestNodeSL.getID(), closestNodeSL);
 		}
 
 		// predecessor is appropriate only if it precedes the given id
 		Node predecessorIfAppropriate = null;
-		if (this.predecessor != null && key.isInInterval(this.predecessor.getNodeID(), this.localID)) {
+		if (this.predecessor != null && key.isInInterval(this.predecessor.getID(), this.localID)) {
 			predecessorIfAppropriate = this.predecessor;
-			foundNodes.put(this.predecessor.getNodeID(), predecessor);
+			foundNodes.put(this.predecessor.getID(), predecessor);
 		}
 
 		// with three references which may be null, there are eight (8) cases we
@@ -250,9 +250,9 @@ final class References {
 		// }
 		// }
 		if (this.logger.isEnabledFor(DEBUG)) {
-			this.logger.debug("Closest preceding node of ID " + key + " at node " + this.localID.toString() + " is " + closestNode.getNodeID() + " with closestNodeFT="
-					+ (closestNodeFT == null ? "null" : "" + closestNodeFT.getNodeID()) + " and closestNodeSL=" + (closestNodeSL == null ? "null" : "" + closestNodeSL.getNodeID())
-					+ " and predecessor (only if it precedes given ID)=" + (predecessorIfAppropriate == null ? "null" : "" + predecessorIfAppropriate.getNodeID()));
+			this.logger.debug("Closest preceding node of ID " + key + " at node " + this.localID.toString() + " is " + closestNode.getID() + " with closestNodeFT="
+					+ (closestNodeFT == null ? "null" : "" + closestNodeFT.getID()) + " and closestNodeSL=" + (closestNodeSL == null ? "null" : "" + closestNodeSL.getID())
+					+ " and predecessor (only if it precedes given ID)=" + (predecessorIfAppropriate == null ? "null" : "" + predecessorIfAppropriate.getID()));
 		}
 		return closestNode;
 	}
@@ -276,7 +276,7 @@ final class References {
 
 		boolean debug = this.logger.isEnabledFor(DEBUG);
 		// June 21, 2006. Moved here by sven to avoid failing of checkIfProxy()
-		if (newReference.getNodeID().equals(this.localID)) {
+		if (newReference.getID().equals(this.localID)) {
 			if (debug) {
 				this.logger.debug("Reference on myself was not added");
 			}
@@ -291,7 +291,7 @@ final class References {
 
 		if (debug) {
 			this.logger
-			.debug("Attempted to add reference " + newReference.getNodeID().toString() + " to finger table and successor list. Whether it fit " + "or not depends on those data structures.");
+			.debug("Attempted to add reference " + newReference.getID().toString() + " to finger table and successor list. Whether it fit " + "or not depends on those data structures.");
 		}
 	}
 
@@ -373,7 +373,7 @@ final class References {
 		result.append(this.fingerTable.toString());
 
 		result.append(this.successorList.toString());
-		result.append("Predecessor: " + (this.predecessor == null ? "null" : "" + this.predecessor.getNodeID() + ", " + this.predecessor.getNodeURL()));
+		result.append("Predecessor: " + (this.predecessor == null ? "null" : "" + this.predecessor.getID() + ", " + this.predecessor.getURL()));
 		return result.toString();
 	}
 
@@ -418,7 +418,7 @@ final class References {
 				if (this.successorList.getCapacity() == sLSize) {
 					Node lastSuccessor = this.successorList.getReferences().get(sLSize - 1);
 					try {
-						lastSuccessor.removeReplicas(this.predecessor.getNodeID(), new HashSet<Entry>());
+						lastSuccessor.removeReplicas(this.predecessor.getID(), new HashSet<Entry>());
 					} catch (CommunicationException e) {
 						logger.warn("Could not remove replicas on last predecessor", e);
 					}
@@ -430,13 +430,13 @@ final class References {
 				if (info) {
 					this.logger.info("Predecessor reference set to " + potentialPredecessor + "; was null before.");
 				}
-				Set<Entry> entriesToRep = this.entries.getEntriesInInterval(this.predecessor.getNodeID(), this.localID);
+				Set<Entry> entriesToRep = this.entries.getEntriesInInterval(this.predecessor.getID(), this.localID);
 				List<Node> successors = this.successorList.getReferences();
 				for (Node successor : successors) {
 					try {
 						successor.insertReplicas(entriesToRep);
 					} catch (CommunicationException e) {
-						this.logger.warn("Damn. Could not replicate to successor " + successor.getNodeID(), e);
+						this.logger.warn("Damn. Could not replicate to successor " + successor.getID(), e);
 					}
 				}
 			}
@@ -510,7 +510,7 @@ final class References {
 		// if the local node did not have a predecessor reference before
 		// or if the potential predecessor is closer to this local node,
 		// replace the predecessor reference
-		if (this.predecessor == null || potentialPredecessor.getNodeID().isInInterval(this.predecessor.getNodeID(), this.localID)) {
+		if (this.predecessor == null || potentialPredecessor.getID().isInInterval(this.predecessor.getID(), this.localID)) {
 
 			if (this.logger.isEnabledFor(INFO)) {
 				this.logger.info("Setting a new predecessor reference: New reference is " + potentialPredecessor + ", old reference was " + (this.predecessor == null ? "null" : this.predecessor));

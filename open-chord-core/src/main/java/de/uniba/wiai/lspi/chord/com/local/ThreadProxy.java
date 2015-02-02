@@ -70,7 +70,7 @@ public final class ThreadProxy extends Proxy {
 	private ThreadProxy(URL creatorURL1, URL url, ID nodeID1) {
 		super(url);
 		this.registry = Registry.getRegistryInstance();
-		this.nodeID = nodeID1;
+		this.id = nodeID1;
 		this.creatorURL = creatorURL1;
 	}
 
@@ -93,11 +93,11 @@ public final class ThreadProxy extends Proxy {
 		if (endpoint_ == null) {
 			throw new CommunicationException();
 		}
-		this.nodeID = endpoint_.getNodeID();
+		this.id = endpoint_.getNodeID();
 	}
 
 	void reSetNodeID(ID id) {
-		this.setNodeID(id);
+		this.setID(id);
 	}
 
 	/**
@@ -121,7 +121,7 @@ public final class ThreadProxy extends Proxy {
 		/*
 		 * Ensure that node id is set, if has not been set before.
 		 */
-		this.getNodeID();
+		this.getID();
 
 		if (!this.hasBeenUsed) {
 			this.hasBeenUsed = true;
@@ -216,7 +216,7 @@ public final class ThreadProxy extends Proxy {
 	public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getNodeURL());
+		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getURL());
 
 		logger.debug("Trying to execute notify().");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -264,14 +264,14 @@ public final class ThreadProxy extends Proxy {
 	 * @return The copy of this.
 	 */
 	private ThreadProxy cloneMeAt(URL creatorUrl) {
-		return new ThreadProxy(creatorUrl, this.nodeURL, this.nodeID);
+		return new ThreadProxy(creatorUrl, this.nodeURL, this.id);
 	}
 
 	@Override
 	public void leavesNetwork(Node predecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy predecessorProxy = new ThreadProxy(this.creatorURL, predecessor.getNodeURL());
+		ThreadProxy predecessorProxy = new ThreadProxy(this.creatorURL, predecessor.getURL());
 
 		logger.debug("Trying to execute leavesNetwork(" + predecessor + ").");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -310,7 +310,7 @@ public final class ThreadProxy extends Proxy {
 	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getNodeURL());
+		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getURL());
 
 		logger.debug("Trying to execute notifyAndCopyEntries().");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);

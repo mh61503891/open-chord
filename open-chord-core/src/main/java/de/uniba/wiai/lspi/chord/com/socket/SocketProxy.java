@@ -202,7 +202,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 			throw new IllegalArgumentException("null");
 		}
 		this.urlOfLocalNode = urlOfLocalNode1;
-		this.nodeID = nodeID1;
+		this.id = nodeID1;
 	}
 
 	/**
@@ -454,7 +454,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @throws CommunicationException
 	 */
 	private void initializeNodeID() throws CommunicationException {
-		if (this.nodeID == null) {
+		if (this.id == null) {
 			this.makeSocketAvailable();
 
 			logger.debug("Trying to get node ID ");
@@ -477,7 +477,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 				throw new CommunicationException(response.getFailureReason());
 			} else {
 				try {
-					this.nodeID = (ID) response.getResult();
+					this.id = (ID) response.getResult();
 				} catch (ClassCastException e) {
 					/*
 					 * This should not occur as all nodes should have the same classes!
@@ -498,7 +498,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		this.makeSocketAvailable();
 
-		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getNodeURL(), potentialPredecessor.getNodeID());
+		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getURL(), potentialPredecessor.getID());
 
 		Request request = this.createRequest(MethodConstants.NOTIFY, new Serializable[] { nodeInfoToSend });
 
@@ -644,7 +644,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 
 		logger.debug("Trying to insert notify node that " + predecessor + " leaves network.");
 
-		RemoteNodeInfo nodeInfo = new RemoteNodeInfo(predecessor.getNodeURL(), predecessor.getNodeID());
+		RemoteNodeInfo nodeInfo = new RemoteNodeInfo(predecessor.getURL(), predecessor.getID());
 
 		/* prepare request for method insertEntry */
 		Request request = this.createRequest(MethodConstants.LEAVES_NETWORK, new Serializable[] { nodeInfo });
@@ -935,7 +935,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.makeSocketAvailable();
 
-		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getNodeURL(), potentialPredecessor.getNodeID());
+		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getURL(), potentialPredecessor.getID());
 
 		/* prepare request for method notifyAndCopyEntries */
 		Request request = this.createRequest(MethodConstants.NOTIFY_AND_COPY, new Serializable[] { nodeInfoToSend });
@@ -982,7 +982,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 */
 	@Override
 	public String toString() {
-		if (this.nodeID == null || this.mySocket == null) {
+		if (this.id == null || this.mySocket == null) {
 			return "Unconnected SocketProxy from " + this.urlOfLocalNode + " to " + this.nodeURL;
 		}
 		if (this.stringRepresentation == null) {
@@ -992,7 +992,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 			builder.append(", socket=");
 			builder.append(this.mySocket);
 			builder.append("] to Node[id=");
-			builder.append(this.nodeID);
+			builder.append(this.id);
 			builder.append(", url=");
 			builder.append(this.nodeURL);
 			builder.append("]");

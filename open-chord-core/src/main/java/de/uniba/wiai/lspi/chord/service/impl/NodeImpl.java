@@ -98,7 +98,7 @@ public final class NodeImpl extends Node {
 
 		this.impl = impl;
 		this.asyncExecutor = impl.getAsyncExecutor();
-		this.nodeID = nodeID;
+		this.id = nodeID;
 		this.nodeURL = nodeURL;
 		this.references = references;
 		this.entries = entries;
@@ -178,7 +178,7 @@ public final class NodeImpl extends Node {
 			// of
 			// the potential predecessor, including those equal to potential
 			// predecessor
-			Set<Entry> copiedEntries = this.entries.getEntriesInInterval(this.nodeID, potentialPredecessor.getNodeID());
+			Set<Entry> copiedEntries = this.entries.getEntriesInInterval(this.id, potentialPredecessor.getID());
 
 			return new RefsAndEntries(this.notify(potentialPredecessor), copiedEntries);
 		} finally {
@@ -201,12 +201,12 @@ public final class NodeImpl extends Node {
 	@Override
 	public final void insertEntry(Entry toInsert) throws CommunicationException {
 		if (this.logger.isEnabledFor(DEBUG)) {
-			this.logger.debug("Inserting entry with id " + toInsert.getId() + " at node " + this.nodeID);
+			this.logger.debug("Inserting entry with id " + toInsert.getId() + " at node " + this.id);
 		}
 
 		// Possible, but rare situation: a new node has joined which now is
 		// responsible for the id!
-		if ((this.references.getPredecessor() == null) || !toInsert.getId().isInInterval(this.references.getPredecessor().getNodeID(), this.nodeID)) {
+		if ((this.references.getPredecessor() == null) || !toInsert.getId().isInInterval(this.references.getPredecessor().getID(), this.id)) {
 			this.references.getPredecessor().insertEntry(toInsert);
 			return;
 		}
@@ -249,12 +249,12 @@ public final class NodeImpl extends Node {
 	public final void removeEntry(Entry entryToRemove) throws CommunicationException {
 
 		if (this.logger.isEnabledFor(DEBUG)) {
-			this.logger.debug("Removing entry with id " + entryToRemove.getId() + " at node " + this.nodeID);
+			this.logger.debug("Removing entry with id " + entryToRemove.getId() + " at node " + this.id);
 		}
 
 		// Possible, but rare situation: a new node has joined which now is
 		// responsible for the id!
-		if (this.references.getPredecessor() != null && !entryToRemove.getId().isInInterval(this.references.getPredecessor().getNodeID(), this.nodeID)) {
+		if (this.references.getPredecessor() != null && !entryToRemove.getId().isInInterval(this.references.getPredecessor().getID(), this.id)) {
 			this.references.getPredecessor().removeEntry(entryToRemove);
 			return;
 		}
@@ -269,7 +269,7 @@ public final class NodeImpl extends Node {
 
 		// invoke removeReplicates method on all nodes in successor list
 		List<Node> successors = this.references.getSuccessors();
-		final ID id = this.nodeID;
+		final ID id = this.id;
 		for (final Node successor : successors) {
 			this.asyncExecutor.execute(new Runnable() {
 				public void run() {
@@ -298,7 +298,7 @@ public final class NodeImpl extends Node {
 			/*
 			 * Determine entries to remove. These entries are located between the id of the local peer and the argument sendingNodeID
 			 */
-			Set<Entry> allReplicasToRemove = this.entries.getEntriesInInterval(this.nodeID, sendingNodeID);
+			Set<Entry> allReplicasToRemove = this.entries.getEntriesInInterval(this.id, sendingNodeID);
 			if (debug) {
 				this.logger.debug("Replicas to remove " + allReplicasToRemove);
 				this.logger.debug("Size of replicas to remove " + allReplicasToRemove.size());
@@ -326,9 +326,9 @@ public final class NodeImpl extends Node {
 
 		// Possible, but rare situation: a new node has joined which now is
 		// responsible for the id!
-		if (this.references.getPredecessor() != null && !id.isInInterval(this.references.getPredecessor().getNodeID(), this.nodeID)) {
-			this.logger.fatal("The rare situation has occured at time " + System.currentTimeMillis() + ", id to look up=" + id + ", id of local node=" + this.nodeID + ", id of predecessor="
-					+ this.references.getPredecessor().getNodeID());
+		if (this.references.getPredecessor() != null && !id.isInInterval(this.references.getPredecessor().getID(), this.id)) {
+			this.logger.fatal("The rare situation has occured at time " + System.currentTimeMillis() + ", id to look up=" + id + ", id of local node=" + this.id + ", id of predecessor="
+					+ this.references.getPredecessor().getID());
 			return this.references.getPredecessor().retrieveEntries(id);
 		}
 
@@ -345,8 +345,8 @@ public final class NodeImpl extends Node {
 	@Override
 	final public void leavesNetwork(Node predecessor) {
 		if (this.logger.isEnabledFor(INFO)) {
-			this.logger.info("Leaves network invoked; " + this.nodeID + ". Updating references.");
-			this.logger.info("New predecessor " + predecessor.getNodeID());
+			this.logger.info("Leaves network invoked; " + this.id + ". Updating references.");
+			this.logger.info("New predecessor " + predecessor.getID());
 		}
 		if (this.logger.isEnabledFor(DEBUG)) {
 			this.logger.debug("References before update: " + this.references.toString());

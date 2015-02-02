@@ -263,11 +263,11 @@ final class RequestHandler extends Thread implements EndpointStateListener {
 		switch (methodType) {
 		case MethodConstants.FIND_SUCCESSOR: {
 			Node chordNode = this.node.findSuccessor((ID) parameters[0]);
-			result = new RemoteNodeInfo(chordNode.getNodeURL(), chordNode.getNodeID());
+			result = new RemoteNodeInfo(chordNode.getURL(), chordNode.getID());
 			break;
 		}
 		case MethodConstants.GET_NODE_ID: {
-			result = this.node.getNodeID();
+			result = this.node.getID();
 			break;
 		}
 		case MethodConstants.INSERT_ENTRY: {
@@ -280,26 +280,26 @@ final class RequestHandler extends Thread implements EndpointStateListener {
 		}
 		case MethodConstants.LEAVES_NETWORK: {
 			RemoteNodeInfo nodeInfo = (RemoteNodeInfo) parameters[0];
-			this.node.leavesNetwork(SocketProxy.create(nodeInfo.getNodeURL(), this.node.getNodeURL(), nodeInfo.getNodeID()));
+			this.node.leavesNetwork(SocketProxy.create(nodeInfo.getNodeURL(), this.node.getURL(), nodeInfo.getNodeID()));
 			break;
 		}
 		case MethodConstants.NOTIFY: {
 			RemoteNodeInfo nodeInfo = (RemoteNodeInfo) parameters[0];
-			List<Node> l = this.node.notify(SocketProxy.create(nodeInfo.getNodeURL(), this.node.getNodeURL(), nodeInfo.getNodeID()));
+			List<Node> l = this.node.notify(SocketProxy.create(nodeInfo.getNodeURL(), this.node.getURL(), nodeInfo.getNodeID()));
 			List<RemoteNodeInfo> nodeInfos = new LinkedList<RemoteNodeInfo>();
 			for (Node current : l) {
-				nodeInfos.add(new RemoteNodeInfo(current.getNodeURL(), current.getNodeID()));
+				nodeInfos.add(new RemoteNodeInfo(current.getURL(), current.getID()));
 			}
 			result = (Serializable) nodeInfos;
 			break;
 		}
 		case MethodConstants.NOTIFY_AND_COPY: {
 			RemoteNodeInfo nodeInfo = (RemoteNodeInfo) parameters[0];
-			RefsAndEntries refs = this.node.notifyAndCopyEntries(SocketProxy.create(nodeInfo.getNodeURL(), this.node.getNodeURL(), nodeInfo.getNodeID()));
-			List<Node> l = refs.getRefs();
+			RefsAndEntries refs = this.node.notifyAndCopyEntries(SocketProxy.create(nodeInfo.getNodeURL(), this.node.getURL(), nodeInfo.getNodeID()));
+			List<Node> l = refs.getReferences();
 			List<RemoteNodeInfo> nodeInfos = new LinkedList<RemoteNodeInfo>();
 			for (Node current : l) {
-				nodeInfos.add(new RemoteNodeInfo(current.getNodeURL(), current.getNodeID()));
+				nodeInfos.add(new RemoteNodeInfo(current.getURL(), current.getID()));
 			}
 			RemoteRefsAndEntries rRefs = new RemoteRefsAndEntries(refs.getEntries(), nodeInfos);
 			result = rRefs;

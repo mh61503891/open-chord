@@ -98,11 +98,11 @@ final class StabilizeTask implements Runnable {
 					 */
 					mySuccessorsPredecessorAndSuccessorList = successor.notify(this.parent);
 					if (infoEnabled) {
-						StabilizeTask.logger.info("Received response to notify request from " + "successor" + successor.getNodeID());
+						StabilizeTask.logger.info("Received response to notify request from " + "successor" + successor.getID());
 					}
 				} catch (CommunicationException e) {
 					if (debugEnabled) {
-						StabilizeTask.logger.debug("Invocation of notify on node " + successor.getNodeID() + " was not successful due to a " + "communication failure! Successor has "
+						StabilizeTask.logger.debug("Invocation of notify on node " + successor.getID() + " was not successful due to a " + "communication failure! Successor has "
 								+ "failed during stabilization! " + "Removing successor!", e);
 					}
 					this.references.removeReference(successor);
@@ -113,12 +113,12 @@ final class StabilizeTask implements Runnable {
 				 * 19.06.2007. sven Test if our successor has a different predecessor than this node.
 				 */
 				if ((mySuccessorsPredecessorAndSuccessorList.size() > 0) && (mySuccessorsPredecessorAndSuccessorList.get(0) != null)) {
-					if (!this.parent.getNodeID().equals(mySuccessorsPredecessorAndSuccessorList.get(0).getNodeID())) {
+					if (!this.parent.getID().equals(mySuccessorsPredecessorAndSuccessorList.get(0).getID())) {
 						/*
 						 * If it does not know us, we have to fetch all entries relevant for us.
 						 */
 						RefsAndEntries refsAndEntries = successor.notifyAndCopyEntries(this.parent);
-						mySuccessorsPredecessorAndSuccessorList = refsAndEntries.getRefs();
+						mySuccessorsPredecessorAndSuccessorList = refsAndEntries.getReferences();
 						/*
 						 * and have to store them locally
 						 */
@@ -134,7 +134,7 @@ final class StabilizeTask implements Runnable {
 					}
 				}
 				if (infoEnabled) {
-					StabilizeTask.logger.info("Invocation of notify on node " + successor.getNodeID() + " was successful");
+					StabilizeTask.logger.info("Invocation of notify on node " + successor.getID() + " was successful");
 				}
 			}
 		} catch (Exception e) {

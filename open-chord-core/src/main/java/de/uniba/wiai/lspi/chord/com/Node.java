@@ -1,98 +1,64 @@
-/***************************************************************************
- * * Node.java * ------------------- * date : 16.08.2004 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer Praktische
- * Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
- ***************************************************************************/
-
-/***************************************************************************
- * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
- * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
- * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
- ***************************************************************************/
 package de.uniba.wiai.lspi.chord.com;
 
 import java.util.List;
 import java.util.Set;
 
+import lombok.ToString;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 
 /**
  * Provides methods which remote nodes can invoke.
  *
- * @author Sven Kaffille, Karsten Loesing
+ * @author Sven Kaffille
+ * @author Karsten Loesing
+ * @author Masayuki Higashino
  * @version 1.0.5
  */
-
-/*
- * 21.03.2006 changed by sven. Node needs not to be Serializable as no instances of it are supposed to being serialized.
- */
+@ToString
 public abstract class Node {
 
-	@Override
-	public final boolean equals(Object arg0) {
-		if (arg0 == null || !(arg0 instanceof Node)) {
-			return false;
-		}
-		return ((Node) arg0).nodeID.equals(this.nodeID);
-	}
-
-	@Override
-	public final int hashCode() {
-		return this.nodeID.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		String id = null;
-		if (this.nodeID != null) {
-			id = this.nodeID.toString();
-		}
-		String url = "null";
-		if (this.nodeURL != null) {
-			url = this.nodeURL.toString();
-		}
-		return "Node[type=" + this.getClass().getSimpleName() + ", id=" + id + ", url=" + url + "]";
-	}
-
-	/**
-	 * This is the id of this node. It has to be set by every implementation of this class!
-	 */
-	protected ID nodeID;
-
-	/**
-	 * This is the url of this node. It has to be set by every implementation of this class!
-	 */
+	protected ID id;
 	protected URL nodeURL;
 
-	/**
-	 * Returns the ID of a node. Is invoked by remote nodes which do not know the ID of this node, yet. After invocation, the nodeID is remembered by the remote
-	 * node, s.t. future invocations of getNodeID are unnecessary.
-	 *
-	 * @return ID of a node.
-	 * @throws CommunicationException
-	 *             If something goes wrong when contacting the node.
-	 */
-	public final ID getNodeID() {
-		return this.nodeID;
+	protected void setID(ID id) {
+		this.id = id;
 	}
 
-	/**
-	 * @return
-	 */
-	public final URL getNodeURL() {
-		return this.nodeURL;
+	protected void setURL(URL url) {
+		this.nodeURL = url;
+	}
+
+	public ID getID() {
+		return id;
+	}
+
+	public URL getURL() {
+		return nodeURL;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || !(o instanceof Node))
+			return false;
+		return ((Node) o).id.equals(id);
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode();
 	}
 
 	/**
 	 * Returns the Chord node which is responsible for the given key.
 	 *
-	 * @param key
-	 *            Key for which the successor is searched for.
+	 * @param id
+	 *            ID for which the successor is searched for.
 	 * @return Responsible node.
 	 * @throws CommunicationException
 	 *             Thrown if an unresolvable communication failure occurs.
 	 */
-	public abstract Node findSuccessor(ID key) throws CommunicationException;
+	public abstract Node findSuccessor(ID id) throws CommunicationException;
 
 	/**
 	 * Requests this node's predecessor in result[0] and successor list in result[1..length-1]. This method is invoked by another node which thinks it is this
@@ -126,11 +92,11 @@ public abstract class Node {
 	/**
 	 * Stores the given object under the given ID.
 	 *
-	 * @param entryToInsert
+	 * @param entry
 	 * @throws CommunicationException
 	 *             Thrown if an unresolvable communication failure occurs.
 	 */
-	public abstract void insertEntry(Entry entryToInsert) throws CommunicationException;
+	public abstract void insertEntry(Entry entry) throws CommunicationException;
 
 	/**
 	 * Inserts replicates of the given entries.
@@ -145,12 +111,12 @@ public abstract class Node {
 	/**
 	 * Removes the given object from the list stored under the given ID.
 	 *
-	 * @param entryToRemove
+	 * @param entry
 	 *            The entry to remove from the dht.
 	 * @throws CommunicationException
 	 *             Thrown if an unresolvable communication failure occurs.
 	 */
-	public abstract void removeEntry(Entry entryToRemove) throws CommunicationException;
+	public abstract void removeEntry(Entry entry) throws CommunicationException;
 
 	/**
 	 * Removes replicates of the given entries.
@@ -188,19 +154,4 @@ public abstract class Node {
 	 */
 	public abstract void disconnect();
 
-	/**
-	 * @param nodeID
-	 *            the nodeID to set
-	 */
-	protected final void setNodeID(ID nodeID) {
-		this.nodeID = nodeID;
-	}
-
-	/**
-	 * @param nodeURL
-	 *            the nodeURL to set
-	 */
-	protected final void setNodeURL(URL nodeURL) {
-		this.nodeURL = nodeURL;
-	}
 }

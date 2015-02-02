@@ -89,10 +89,10 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	}
 
 	private RemoteNodeInfo createInfo(Node node) {
-		if (node.getNodeID().equals(this.node.getNodeID())) {
-			return new RemoteNodeInfo(remoteNode, this.node.getNodeID(), this.node.getNodeURL());
+		if (node.getID().equals(this.node.getID())) {
+			return new RemoteNodeInfo(remoteNode, this.node.getID(), this.node.getURL());
 		} else {
-			return new RemoteNodeInfo(((RMIProxy) node).getRemoteNode(), node.getNodeID(), node.getNodeURL());
+			return new RemoteNodeInfo(((RMIProxy) node).getRemoteNode(), node.getID(), node.getURL());
 		}
 	}
 
@@ -106,7 +106,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	}
 
 	public ID getNodeID() throws RemoteException {
-		return this.node.getNodeID();
+		return this.node.getID();
 	}
 
 	public void insertEntry(Entry entryToInsert) throws RemoteException, CommunicationException {
@@ -134,7 +134,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	public RemoteRefsAndEntries notifyAndCopyEntries(RemoteNodeInfo potentialPredecessor) throws RemoteException, CommunicationException {
 		RefsAndEntries raes = this.node.notifyAndCopyEntries(new RMIProxy(potentialPredecessor, this.getURL()));
 		List<RemoteNodeInfo> rNodes = new LinkedList<RemoteNodeInfo>();
-		List<Node> nodes = raes.getRefs();
+		List<Node> nodes = raes.getReferences();
 		for (Node node : nodes) {
 			rNodes.add(this.createInfo(node));
 		}

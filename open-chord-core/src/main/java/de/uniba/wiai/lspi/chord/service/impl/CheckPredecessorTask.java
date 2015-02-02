@@ -84,7 +84,7 @@ final class CheckPredecessorTask implements Runnable {
 					return;
 				}
 
-				CheckPredecessorTask.logger.info("Invocation of check predecessor on node " + predecessor.getNodeID() + " was successful");
+				CheckPredecessorTask.logger.info("Invocation of check predecessor on node " + predecessor.getID() + " was successful");
 			}
 		} catch (Exception e) {
 			CheckPredecessorTask.logger.warn("Unexpected Exception caught in CheckpredecessorTask!", e);

@@ -54,7 +54,7 @@ public final class RMIProxy extends Proxy {
 			throw new IllegalArgumentException("URL of local node must not be null!");
 		}
 		this.remoteNode = rNode.getRemoteNode();
-		this.nodeID = rNode.getNodeID();
+		this.id = rNode.getNodeID();
 		this.localURL = url;
 		this.connected = true;
 		this.localEndpoint = (RMIEndpoint) Endpoint.getEndpoint(this.localURL);
@@ -77,7 +77,7 @@ public final class RMIProxy extends Proxy {
 		} catch (NotBoundException e) {
 			throw new CommunicationException("Cannot find stub with name " + url.getHost(), e);
 		}
-		this.nodeID = this.remoteNode.getNodeID();
+		this.id = this.remoteNode.getNodeID();
 		this.connected = true;
 		this.localEndpoint = (RMIEndpoint) Endpoint.getEndpoint(this.localURL);
 	}
@@ -151,14 +151,14 @@ public final class RMIProxy extends Proxy {
 		this.testConnection();
 		try {
 			RemoteNodeInfo info = null;
-			if (this.localURL.equals(predecessor.getNodeURL())) {
-				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getNodeID(), predecessor.getNodeURL());
+			if (this.localURL.equals(predecessor.getURL())) {
+				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getID(), predecessor.getURL());
 			} else {
-				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getNodeID(), predecessor.getNodeURL());
+				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getID(), predecessor.getURL());
 			}
 			this.remoteNode.leavesNetwork(info);
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.getNodeURL() + "!", e);
+			throw new CommunicationException("Could not connect to " + this.getURL() + "!", e);
 		}
 	}
 
@@ -167,10 +167,10 @@ public final class RMIProxy extends Proxy {
 		this.testConnection();
 		try {
 			RemoteNodeInfo info = null;
-			if (this.localURL.equals(predecessor.getNodeURL())) {
-				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getNodeID(), predecessor.getNodeURL());
+			if (this.localURL.equals(predecessor.getURL())) {
+				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getID(), predecessor.getURL());
 			} else {
-				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getNodeID(), predecessor.getNodeURL());
+				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getID(), predecessor.getURL());
 			}
 
 			List<RemoteNodeInfo> infos = this.remoteNode.notify(info);
@@ -189,10 +189,10 @@ public final class RMIProxy extends Proxy {
 		this.testConnection();
 		try {
 			RemoteNodeInfo info = null;
-			if (this.localURL.equals(predecessor.getNodeURL())) {
-				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getNodeID(), predecessor.getNodeURL());
+			if (this.localURL.equals(predecessor.getURL())) {
+				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getID(), predecessor.getURL());
 			} else {
-				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getNodeID(), predecessor.getNodeURL());
+				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getID(), predecessor.getURL());
 			}
 
 			RemoteRefsAndEntries rraes = this.remoteNode.notifyAndCopyEntries(info);

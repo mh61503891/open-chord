@@ -1,62 +1,33 @@
-/***************************************************************************
- * * URL.java * ------------------- * date : 16.08.2004 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer Praktische
- * Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
- ***************************************************************************/
-
-/***************************************************************************
- * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
- * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
- * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
- ***************************************************************************/
 package de.uniba.wiai.lspi.chord.data;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Address of nodes. Once created, a URL instance is unmodifiable.
  *
- * @author Sven Kaffille, Karsten Loesing
+ * @author Sven Kaffille
+ * @author Karsten Loesing
  * @version 1.0.5
  */
 public class URL implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 8223277048826783692L;
 
-	/**
-	 * String representation of URL
-	 */
-	private transient String urlString;
-
-	/**
-	 * The protocol of this URL.
-	 */
 	private final String protocol;
-
-	/**
-	 * The host of this URL.
-	 */
 	private final String host;
-
-	/**
-	 * The port of this URL.
-	 */
 	private final int port;
-
-	/**
-	 * The path for this URL.
-	 */
 	private final String path;
+	private transient String urlString;
 
 	/**
 	 * The names of the protocols known to this chord implementation. The name for each protocol can be referenced with help of the constants for the protocoal
 	 * e.g. <code>SOCKET_PROTOCOL</code>.
 	 */
-	public final static List<String> KNOWN_PROTOCOLS = java.util.Collections.unmodifiableList(java.util.Arrays.asList(new String[] { "ocsocket", "oclocal", "ocrmi" }));
+	public final static List<String> KNOWN_PROTOCOLS = Collections.unmodifiableList(Arrays.asList(new String[] { "ocsocket", "oclocal", "ocrmi" }));
 
 	/**
 	 * Array containing default ports for all known protocols. The port for each protocol can be referenced with help of the constants for the protocoal e.g.
@@ -165,108 +136,62 @@ public class URL implements Serializable {
 
 	}
 
-	/**
-	 * Get the protocol of this URL.
-	 *
-	 * @return The protocol of this URL.
-	 */
-	public final String getProtocol() {
-		return this.protocol;
+	public String getProtocol() {
+		return protocol;
 	}
 
-	/**
-	 * Get the host name contained in this URL.
-	 *
-	 * @return Host name contained in this URL.
-	 */
-	public final String getHost() {
-		return this.host;
+	public String getHost() {
+		return host;
 	}
 
-	/**
-	 * Get the path contained in this URL.
-	 *
-	 * @return The path contained in this URL.
-	 */
-	public final String getPath() {
-		return this.path;
-	}
-
-	/**
-	 * Get the port contained in this URL.
-	 *
-	 * @return The port of this URL. Has value <code>NO_PORT</code> if no port has been specified for this URL.
-	 */
 	public final int getPort() {
-		return this.port;
+		return port;
 	}
 
-	/** ******************************************************* */
-	/* START: Overwritten methods from java.lang.Object */
-	/** ******************************************************* */
+	public String getPath() {
+		return path;
+	}
 
-	/**
-	 * Overwritten from {@link java.lang.Object}.
-	 *
-	 * @return Hash code of this URL.
-	 */
 	@Override
-	public final int hashCode() {
+	public int hashCode() {
 		int hash = 17;
-		hash += 37 * this.protocol.hashCode();
-		hash += 37 * this.host.hashCode();
-		hash += 37 * this.path.hashCode();
-		hash += 37 * this.port;
+		hash += 37 * protocol.hashCode();
+		hash += 37 * host.hashCode();
+		hash += 37 * path.hashCode();
+		hash += 37 * port;
 		return hash;
 	}
 
-	/**
-	 * Overwritten from {@link java.lang.Object}.
-	 *
-	 * @param obj
-	 * @return <code>true</code> if provided <code>obj</code> is an instance of <code>URL</code> and has the same attributes as this <code>URL</code>.
-	 */
 	@Override
-	public final boolean equals(Object obj) {
-		if (obj instanceof URL) {
-			URL url = (URL) obj;
-
-			if (!url.getProtocol().equalsIgnoreCase(this.protocol)) {
-				return false;
-			}
-			if (!url.getHost().equalsIgnoreCase(this.host)) {
-				return false;
-			}
-			if (!(url.getPort() == this.port)) {
-				return false;
-			}
-			if (!url.getPath().equals(this.path)) {
-				return false;
-			}
-			return true;
-		}
-		return false;
+	public boolean equals(Object o) {
+		if (!(o instanceof URL))
+			return false;
+		URL url = (URL) o;
+		if (!url.getProtocol().equalsIgnoreCase(getProtocol()))
+			return false;
+		if (!url.getHost().equalsIgnoreCase(getHost()))
+			return false;
+		if (!(url.getPort() == getPort()))
+			return false;
+		if (!url.getPath().equals(getPath()))
+			return false;
+		return true;
 	}
 
-	/**
-	 * Overwritten from {@link java.lang.Object}.
-	 *
-	 * @return String representation of this URL.
-	 */
 	@Override
 	public final String toString() {
-		if (this.urlString == null) {
+		if (urlString == null) {
 			StringBuilder builder = new StringBuilder();
-			builder.append(this.protocol);
+			builder.append(protocol);
 			builder.append(DCOLON_SLASHES);
-			builder.append(this.host);
+			builder.append(host);
 			builder.append(DCOLON);
-			builder.append(this.port);
+			builder.append(port);
 			builder.append(SLASH);
-			builder.append(this.path);
-			this.urlString = builder.toString().toLowerCase();
+			builder.append(path);
+			urlString = builder.toString().toLowerCase();
 		}
-		return this.urlString;
+		return urlString;
 	}
 
 }

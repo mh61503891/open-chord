@@ -95,7 +95,7 @@ final class FixFingerTask implements Runnable {
 			// add new reference to finger table, if not yet included
 			if (newReference != null && !this.references.containsReference(newReference)) {
 				if (this.logger.isEnabledFor(INFO)) {
-					this.logger.info("Adding new reference " + newReference.getNodeID().toString());
+					this.logger.info("Adding new reference " + newReference.getID().toString());
 				}
 				this.references.addReference(newReference);
 			}
