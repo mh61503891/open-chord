@@ -167,8 +167,8 @@ public class Test {
 		}
 
 		@Override
-		public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
-			return new RefsAndEntries(new LinkedList<Node>(), new HashSet<Entry>());
+		public ReferencesAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
+			return new ReferencesAndEntries(new LinkedList<Node>(), new HashSet<Entry>());
 		}
 
 		@Override

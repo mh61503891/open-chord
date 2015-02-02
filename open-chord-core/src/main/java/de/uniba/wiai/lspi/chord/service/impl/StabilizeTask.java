@@ -17,7 +17,7 @@ import java.util.List;
 
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
+import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.util.logging.Logger;
 
 /**
@@ -117,7 +117,7 @@ final class StabilizeTask implements Runnable {
 						/*
 						 * If it does not know us, we have to fetch all entries relevant for us.
 						 */
-						RefsAndEntries refsAndEntries = successor.notifyAndCopyEntries(this.parent);
+						ReferencesAndEntries refsAndEntries = successor.notifyAndCopyEntries(this.parent);
 						mySuccessorsPredecessorAndSuccessorList = refsAndEntries.getReferences();
 						/*
 						 * and have to store them locally

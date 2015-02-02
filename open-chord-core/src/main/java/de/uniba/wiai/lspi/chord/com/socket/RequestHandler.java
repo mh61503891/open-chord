@@ -35,7 +35,7 @@ import de.uniba.wiai.lspi.chord.com.Endpoint;
 import de.uniba.wiai.lspi.chord.com.EndpointStateListener;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
+import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.util.logging.Logger;
 
@@ -295,7 +295,7 @@ final class RequestHandler extends Thread implements EndpointStateListener {
 		}
 		case MethodConstants.NOTIFY_AND_COPY: {
 			RemoteNodeInfo nodeInfo = (RemoteNodeInfo) parameters[0];
-			RefsAndEntries refs = this.node.notifyAndCopyEntries(SocketProxy.create(nodeInfo.getNodeURL(), this.node.getUrl(), nodeInfo.getNodeID()));
+			ReferencesAndEntries refs = this.node.notifyAndCopyEntries(SocketProxy.create(nodeInfo.getNodeURL(), this.node.getUrl(), nodeInfo.getNodeID()));
 			List<Node> l = refs.getReferences();
 			List<RemoteNodeInfo> nodeInfos = new LinkedList<RemoteNodeInfo>();
 			for (Node current : l) {

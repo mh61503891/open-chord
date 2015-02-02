@@ -22,7 +22,7 @@ import de.uniba.wiai.lspi.chord.com.Endpoint;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.com.Proxy;
-import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
+import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 
@@ -185,7 +185,7 @@ public final class RMIProxy extends Proxy {
 	}
 
 	@Override
-	public RefsAndEntries notifyAndCopyEntries(Node predecessor) throws CommunicationException {
+	public ReferencesAndEntries notifyAndCopyEntries(Node predecessor) throws CommunicationException {
 		this.testConnection();
 		try {
 			RemoteNodeInfo info = null;
@@ -202,7 +202,7 @@ public final class RMIProxy extends Proxy {
 			for (RemoteNodeInfo i : infos) {
 				nodes.add(new RMIProxy(i, this.localURL));
 			}
-			RefsAndEntries raes = new RefsAndEntries(nodes, rraes.getEntries());
+			ReferencesAndEntries raes = new ReferencesAndEntries(nodes, rraes.getEntries());
 			return raes;
 		} catch (RemoteException e) {
 			throw new CommunicationException("Could not connect to " + this.url + "!", e);

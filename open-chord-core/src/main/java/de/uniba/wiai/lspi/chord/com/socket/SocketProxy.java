@@ -30,7 +30,7 @@ import de.uniba.wiai.lspi.chord.com.Endpoint;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.com.Proxy;
-import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
+import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.util.logging.Logger;
@@ -932,7 +932,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @throws CommunicationException
 	 */
 	@Override
-	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
+	public ReferencesAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.makeSocketAvailable();
 
 		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getUrl(), potentialPredecessor.getId());
@@ -965,7 +965,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 						newReferences.add(create(nodeInfo.getNodeURL(), this.urlOfLocalNode, nodeInfo.getNodeID()));
 					}
 				}
-				return new RefsAndEntries(newReferences, result.getEntries());
+				return new ReferencesAndEntries(newReferences, result.getEntries());
 			} catch (ClassCastException cce) {
 				throw new CommunicationException("Could not understand result! " + response.getResult());
 			}

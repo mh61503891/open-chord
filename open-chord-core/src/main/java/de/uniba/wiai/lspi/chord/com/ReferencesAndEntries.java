@@ -12,13 +12,13 @@ import lombok.Getter;
  * @version 1.0.5
  */
 @Getter
-public final class RefsAndEntries implements Serializable {
+public class ReferencesAndEntries implements Serializable {
 
 	private static final long serialVersionUID = -3436082603636957676L;
 	private List<Node> references;
 	private Set<Entry> entries;
 
-	public RefsAndEntries(List<Node> references, Set<Entry> entries) {
+	public ReferencesAndEntries(List<Node> references, Set<Entry> entries) {
 		this.references = references;
 		this.entries = entries;
 	}

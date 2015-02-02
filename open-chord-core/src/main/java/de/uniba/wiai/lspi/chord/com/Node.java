@@ -67,7 +67,7 @@ public abstract class Node {
 	 * @return References to predecessor and successors and the entries this node will be responsible for.
 	 * @throws CommunicationException
 	 */
-	public abstract RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException;
+	public abstract ReferencesAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException;
 
 	/**
 	 * Requests a sign of live. This method is invoked by another node which thinks it is this node's successor.

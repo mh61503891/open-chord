@@ -16,7 +16,7 @@ import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Endpoint;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
+import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 
@@ -122,7 +122,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	}
 
 	public RemoteRefsAndEntries notifyAndCopyEntries(RemoteNodeInfo potentialPredecessor) throws RemoteException, CommunicationException {
-		RefsAndEntries raes = this.node.notifyAndCopyEntries(new RMIProxy(potentialPredecessor, this.getURL()));
+		ReferencesAndEntries raes = this.node.notifyAndCopyEntries(new RMIProxy(potentialPredecessor, this.getURL()));
 		List<RemoteNodeInfo> rNodes = new LinkedList<RemoteNodeInfo>();
 		List<Node> nodes = raes.getReferences();
 		for (Node node : nodes) {

@@ -21,7 +21,7 @@ import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Endpoint;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
+import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.chord.service.impl.ChordImpl;
@@ -245,11 +245,11 @@ public final class ThreadEndpoint extends Endpoint {
 	 * @return Implementation of {@link Node#notify(Node)}. See documentation of {@link Node}.
 	 * @throws CommunicationException
 	 */
-	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
+	public ReferencesAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.checkIfCrashed();
 		this.waitFor(Endpoint.State.ACCEPT_ENTRIES);
 		this.notifyInvocationListeners(InvocationListener.NOTIFY_AND_COPY);
-		RefsAndEntries refs = this.node.notifyAndCopyEntries(potentialPredecessor);
+		ReferencesAndEntries refs = this.node.notifyAndCopyEntries(potentialPredecessor);
 		List<Node> nodes = refs.getReferences();
 
 		for (Node current : nodes) {
@@ -261,7 +261,7 @@ public final class ThreadEndpoint extends Endpoint {
 			}
 		}
 		this.notifyInvocationListenersFinished(InvocationListener.NOTIFY_AND_COPY);
-		return new RefsAndEntries(nodes, refs.getEntries());
+		return new ReferencesAndEntries(nodes, refs.getEntries());
 	}
 
 	/**

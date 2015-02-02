@@ -25,7 +25,7 @@ import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Endpoint;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
+import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.util.logging.Logger;
@@ -168,7 +168,7 @@ public final class NodeImpl extends Node {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
+	public final ReferencesAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		/*
 		 * Mutual exclusion between notify and notifyAndCopyEntries. 17.03.2008. sven.
 		 */
@@ -180,7 +180,7 @@ public final class NodeImpl extends Node {
 			// predecessor
 			Set<Entry> copiedEntries = this.entries.getEntriesInInterval(this.id, potentialPredecessor.getId());
 
-			return new RefsAndEntries(this.notify(potentialPredecessor), copiedEntries);
+			return new ReferencesAndEntries(this.notify(potentialPredecessor), copiedEntries);
 		} finally {
 			this.notifyLock.unlock();
 		}

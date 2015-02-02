@@ -28,7 +28,7 @@ import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.com.Proxy;
-import de.uniba.wiai.lspi.chord.com.RefsAndEntries;
+import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.chord.service.AsynChord;
@@ -480,7 +480,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 		this.references.addReference(mySuccessor);
 
 		// notify successor for the first time and copy keys from successor
-		RefsAndEntries copyOfRefsAndEntries;
+		ReferencesAndEntries copyOfRefsAndEntries;
 		try {
 			copyOfRefsAndEntries = mySuccessor.notifyAndCopyEntries(this.localNode);
 		} catch (CommunicationException e2) {
