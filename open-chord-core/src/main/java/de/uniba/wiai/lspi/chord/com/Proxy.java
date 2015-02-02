@@ -1,8 +1,5 @@
 package de.uniba.wiai.lspi.chord.com;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import lombok.NonNull;
 import de.uniba.wiai.lspi.chord.com.local.ThreadProxy;
 import de.uniba.wiai.lspi.chord.com.rmi.RMIProxy;
@@ -20,8 +17,6 @@ import de.uniba.wiai.lspi.chord.data.URL;
  * @version 1.0.5
  */
 public abstract class Proxy extends Node {
-
-	private final static Logger logger = Logger.getLogger(Proxy.class.getName());
 
 	protected Proxy(@NonNull URL url) {
 		this.url = url;
@@ -41,7 +36,6 @@ public abstract class Proxy extends Node {
 		} else {
 			throw new RuntimeException("This should not happen! Unknown Protocol " + protocol);
 		}
-		logger.log(Level.FINE, "Proxy is created: " + node);
 		return node;
 	}
 
