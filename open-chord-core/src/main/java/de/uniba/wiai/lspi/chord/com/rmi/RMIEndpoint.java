@@ -79,10 +79,10 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	}
 
 	private RemoteNodeInfo createInfo(Node node) {
-		if (node.getID().equals(this.node.getID())) {
-			return new RemoteNodeInfo(remoteNode, this.node.getID(), this.node.getURL());
+		if (node.getId().equals(this.node.getId())) {
+			return new RemoteNodeInfo(remoteNode, this.node.getId(), this.node.getUrl());
 		} else {
-			return new RemoteNodeInfo(((RMIProxy) node).getRemoteNode(), node.getID(), node.getURL());
+			return new RemoteNodeInfo(((RMIProxy) node).getRemoteNode(), node.getId(), node.getUrl());
 		}
 	}
 
@@ -96,7 +96,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	}
 
 	public ID getNodeID() throws RemoteException {
-		return this.node.getID();
+		return this.node.getId();
 	}
 
 	public void insertEntry(Entry entryToInsert) throws RemoteException, CommunicationException {

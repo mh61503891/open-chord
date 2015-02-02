@@ -65,7 +65,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public ThreadEndpoint(Node node1, URL url1) {
 		super(node1, url1);
-		this.logger = Logger.getLogger(ThreadEndpoint.class.getName() + "." + node1.getID());
+		this.logger = Logger.getLogger(ThreadEndpoint.class.getName() + "." + node1.getId());
 		this.invocationListeners = new LinkedList<InvocationListener>();
 		this.registry = Registry.getRegistryInstance();
 		this.logger.info(this + " initialised.");
@@ -75,7 +75,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 * @return Implementation of {@link Node#notify(Node)}. See documentation of {@link Node}.
 	 */
 	public ID getNodeID() {
-		return this.node.getID();
+		return this.node.getId();
 	}
 
 	/**
@@ -121,7 +121,7 @@ public final class ThreadEndpoint extends Endpoint {
 		if (n == this.node) {
 			this.logger.debug("Returned node is local node. Converting to 'remote' reference. ");
 			ThreadProxy t = new ThreadProxy(this.url, this.url);
-			t.reSetNodeID(n.getID());
+			t.reSetNodeID(n.getId());
 			n = t;
 		}
 		this.notifyInvocationListenersFinished(InvocationListener.FIND_SUCCESSOR);

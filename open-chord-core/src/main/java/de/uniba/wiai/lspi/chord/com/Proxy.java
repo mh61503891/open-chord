@@ -30,7 +30,7 @@ public abstract class Proxy extends Node {
 		if (url == null) {
 			throw new IllegalArgumentException("URL must not be null!");
 		}
-		this.nodeURL = url;
+		this.url = url;
 		logger.info("Proxy with url " + url + " initialised.");
 	}
 

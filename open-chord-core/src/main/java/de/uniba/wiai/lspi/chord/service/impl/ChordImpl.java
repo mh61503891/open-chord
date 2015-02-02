@@ -476,7 +476,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 		}
 
 		// store reference on my successor
-		this.logger.info(this.localURL + " has successor " + mySuccessor.getURL());
+		this.logger.info(this.localURL + " has successor " + mySuccessor.getUrl());
 		this.references.addReference(mySuccessor);
 
 		// notify successor for the first time and copy keys from successor
@@ -504,7 +504,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 				logger.debug("Actual predecessor: " + this.references.getPredecessor());
 			} else {
 				// we got the right predecessor and successor
-				if (this.getID().isInInterval(refs.get(0).getID(), mySuccessor.getID())) {
+				if (this.getID().isInInterval(refs.get(0).getId(), mySuccessor.getId())) {
 					this.references.addReferenceAsPredecessor(refs.get(0));
 					predecessorSet = true;
 				} else {
@@ -531,7 +531,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 
 				ChordImpl.this.references.addReference(newReference);
 				if (ChordImpl.this.logger.isEnabledFor(DEBUG)) {
-					ChordImpl.this.logger.debug("Added reference on " + newReference.getID() + " which responded to " + "ping request");
+					ChordImpl.this.logger.debug("Added reference on " + newReference.getId() + " which responded to " + "ping request");
 				}
 
 			}
@@ -599,7 +599,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 			responsibleNode = this.findSuccessor(id);
 
 			if (debug) {
-				this.logger.debug("Invoking insertEntry method on node " + responsibleNode.getID());
+				this.logger.debug("Invoking insertEntry method on node " + responsibleNode.getId());
 			}
 
 			// invoke insertEntry method
@@ -692,7 +692,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 			responsibleNode = findSuccessor(id);
 
 			if (debug) {
-				this.logger.debug("Invoking removeEntry method on node " + responsibleNode.getID());
+				this.logger.debug("Invoking removeEntry method on node " + responsibleNode.getId());
 			}
 			// invoke removeEntry method
 			try {
@@ -747,7 +747,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 			return this.localNode;
 		}
 		// check if the key to look up lies between this node and its successor
-		else if (key.isInInterval(this.getID(), successor.getID()) || key.equals(successor.getID())) {
+		else if (key.isInInterval(this.getID(), successor.getId()) || key.equals(successor.getId())) {
 			if (debug) {
 				this.logger.debug("The requested key lies between my own and my " + "successor's node id; therefore return my successor.");
 			}
@@ -757,7 +757,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 				// successor.ping(); // if methods returns, successor is alive.
 				// ping removed on 17.09.2007. sven
 				if (debug) {
-					this.logger.debug("Returning my successor " + successor.getID() + " of type " + successor.getClass());
+					this.logger.debug("Returning my successor " + successor.getId() + " of type " + successor.getClass());
 				}
 				return successor;
 			} catch (Exception e) {
@@ -777,7 +777,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 
 			try {
 				if (debug) {
-					this.logger.debug("Asking closest preceding node known to this node for closest preceding node " + closestPrecedingNode.getID() + " concerning key " + key + " to look up");
+					this.logger.debug("Asking closest preceding node known to this node for closest preceding node " + closestPrecedingNode.getId() + " concerning key " + key + " to look up");
 				}
 				return closestPrecedingNode.findSuccessor(key);
 			} catch (CommunicationException e) {

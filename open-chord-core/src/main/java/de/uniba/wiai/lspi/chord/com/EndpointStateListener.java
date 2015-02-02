@@ -11,12 +11,6 @@ import de.uniba.wiai.lspi.chord.com.Endpoint.State;
  */
 public interface EndpointStateListener {
 
-	/**
-	 * Notify this listener that the endpoint changed it state to <code>newState</code>.
-	 *
-	 * @param newState
-	 *            The new state of the endpoint.
-	 */
-	public void notify(State newState);
+	public void notify(State state);
 
 }

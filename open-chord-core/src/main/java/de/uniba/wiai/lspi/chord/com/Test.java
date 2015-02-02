@@ -24,7 +24,7 @@ public class Test {
 		try {
 			if (args[0] != null) {
 				NodeImpl node = new NodeImpl(URL2);
-				Endpoint ep = Endpoint.createEndpoint(node, node.nodeURL);
+				Endpoint ep = Endpoint.createEndpoint(node, node.url);
 				ep.listen();
 				ep.acceptEntries();
 			}
@@ -32,7 +32,7 @@ public class Test {
 			// TODO: handle exception
 
 			NodeImpl node = new NodeImpl(URL1);
-			Endpoint ep = Endpoint.createEndpoint(node, node.nodeURL);
+			Endpoint ep = Endpoint.createEndpoint(node, node.url);
 			ep.listen();
 			ep.acceptEntries();
 
@@ -47,7 +47,7 @@ public class Test {
 			millis.add((end - start));
 
 			start = System.currentTimeMillis();
-			proxy.getID();
+			proxy.getId();
 			end = System.currentTimeMillis();
 			System.out.println("getNodeID took " + (end - start) + "ms");
 			millis.add((end - start));
@@ -123,13 +123,13 @@ public class Test {
 
 		NodeImpl(String url) {
 			try {
-				this.nodeURL = new URL(url);
+				this.url = new URL(url);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.exit(-1);
 			}
-			this.id = new ID(this.nodeURL.toString().getBytes());
+			this.id = new ID(this.url.toString().getBytes());
 		}
 
 		@Override

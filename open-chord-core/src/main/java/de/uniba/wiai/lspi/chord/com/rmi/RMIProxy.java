@@ -121,7 +121,7 @@ public final class RMIProxy extends Proxy {
 			RemoteNodeInfo info = this.remoteNode.findSuccessor(key);
 			return new RMIProxy(info, this.localURL);
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 	}
 
@@ -131,7 +131,7 @@ public final class RMIProxy extends Proxy {
 		try {
 			this.remoteNode.insertEntry(entryToInsert);
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 	}
 
@@ -141,7 +141,7 @@ public final class RMIProxy extends Proxy {
 		try {
 			this.remoteNode.insertReplicas(entries);
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 
 	}
@@ -151,14 +151,14 @@ public final class RMIProxy extends Proxy {
 		this.testConnection();
 		try {
 			RemoteNodeInfo info = null;
-			if (this.localURL.equals(predecessor.getURL())) {
-				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getID(), predecessor.getURL());
+			if (this.localURL.equals(predecessor.getUrl())) {
+				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getId(), predecessor.getUrl());
 			} else {
-				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getID(), predecessor.getURL());
+				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getId(), predecessor.getUrl());
 			}
 			this.remoteNode.leavesNetwork(info);
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.getURL() + "!", e);
+			throw new CommunicationException("Could not connect to " + this.getUrl() + "!", e);
 		}
 	}
 
@@ -167,10 +167,10 @@ public final class RMIProxy extends Proxy {
 		this.testConnection();
 		try {
 			RemoteNodeInfo info = null;
-			if (this.localURL.equals(predecessor.getURL())) {
-				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getID(), predecessor.getURL());
+			if (this.localURL.equals(predecessor.getUrl())) {
+				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getId(), predecessor.getUrl());
 			} else {
-				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getID(), predecessor.getURL());
+				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getId(), predecessor.getUrl());
 			}
 
 			List<RemoteNodeInfo> infos = this.remoteNode.notify(info);
@@ -180,7 +180,7 @@ public final class RMIProxy extends Proxy {
 			}
 			return nodes;
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 	}
 
@@ -189,10 +189,10 @@ public final class RMIProxy extends Proxy {
 		this.testConnection();
 		try {
 			RemoteNodeInfo info = null;
-			if (this.localURL.equals(predecessor.getURL())) {
-				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getID(), predecessor.getURL());
+			if (this.localURL.equals(predecessor.getUrl())) {
+				info = new RemoteNodeInfo(this.localEndpoint.getRemoteNode(), predecessor.getId(), predecessor.getUrl());
 			} else {
-				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getID(), predecessor.getURL());
+				info = new RemoteNodeInfo(((RMIProxy) predecessor).remoteNode, predecessor.getId(), predecessor.getUrl());
 			}
 
 			RemoteRefsAndEntries rraes = this.remoteNode.notifyAndCopyEntries(info);
@@ -205,7 +205,7 @@ public final class RMIProxy extends Proxy {
 			RefsAndEntries raes = new RefsAndEntries(nodes, rraes.getEntries());
 			return raes;
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 	}
 
@@ -215,7 +215,7 @@ public final class RMIProxy extends Proxy {
 		try {
 			this.remoteNode.ping();
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 	}
 
@@ -225,7 +225,7 @@ public final class RMIProxy extends Proxy {
 		try {
 			this.remoteNode.removeEntry(entryToRemove);
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 	}
 
@@ -235,7 +235,7 @@ public final class RMIProxy extends Proxy {
 		try {
 			this.remoteNode.removeReplicas(sendingNode, replicasToRemove);
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 	}
 
@@ -245,7 +245,7 @@ public final class RMIProxy extends Proxy {
 		try {
 			return this.remoteNode.retrieveEntries(id);
 		} catch (RemoteException e) {
-			throw new CommunicationException("Could not connect to " + this.nodeURL + "!", e);
+			throw new CommunicationException("Could not connect to " + this.url + "!", e);
 		}
 	}
 

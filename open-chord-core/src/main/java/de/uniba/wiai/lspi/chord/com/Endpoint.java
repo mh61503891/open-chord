@@ -201,7 +201,7 @@ public abstract class Endpoint {
 		notify(this.state);
 		closeConnections();
 		synchronized (endpoints) {
-			endpoints.remove(node.nodeURL);
+			endpoints.remove(node.url);
 		}
 	}
 

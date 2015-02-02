@@ -3,6 +3,8 @@ package de.uniba.wiai.lspi.chord.com;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
@@ -16,26 +18,12 @@ import de.uniba.wiai.lspi.chord.data.URL;
  * @version 1.0.5
  */
 @ToString
+@Setter
+@Getter
 public abstract class Node {
 
 	protected ID id;
-	protected URL nodeURL;
-
-	protected void setID(ID id) {
-		this.id = id;
-	}
-
-	protected void setURL(URL url) {
-		this.nodeURL = url;
-	}
-
-	public ID getID() {
-		return id;
-	}
-
-	public URL getURL() {
-		return nodeURL;
-	}
+	protected URL url;
 
 	@Override
 	public boolean equals(Object o) {

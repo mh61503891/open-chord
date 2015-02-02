@@ -239,7 +239,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 			this.out.flush();
 			this.out.reset();
 		} catch (IOException e) {
-			throw new CommunicationException("Could not connect to node " + this.nodeURL, e);
+			throw new CommunicationException("Could not connect to node " + this.url, e);
 		}
 	}
 
@@ -498,7 +498,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		this.makeSocketAvailable();
 
-		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getURL(), potentialPredecessor.getID());
+		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getUrl(), potentialPredecessor.getId());
 
 		Request request = this.createRequest(MethodConstants.NOTIFY, new Serializable[] { nodeInfoToSend });
 
@@ -541,7 +541,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 		boolean debugEnabled = SocketProxy.logger.isEnabledFor(DEBUG);
 
 		if (debugEnabled) {
-			logger.debug("Trying to ping remote node " + this.nodeURL);
+			logger.debug("Trying to ping remote node " + this.url);
 		}
 
 		/* prepare request for method findSuccessor */
@@ -644,7 +644,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 
 		logger.debug("Trying to insert notify node that " + predecessor + " leaves network.");
 
-		RemoteNodeInfo nodeInfo = new RemoteNodeInfo(predecessor.getURL(), predecessor.getID());
+		RemoteNodeInfo nodeInfo = new RemoteNodeInfo(predecessor.getUrl(), predecessor.getId());
 
 		/* prepare request for method insertEntry */
 		Request request = this.createRequest(MethodConstants.LEAVES_NETWORK, new Serializable[] { nodeInfo });
@@ -775,7 +775,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 */
 	private void makeSocketAvailable() throws CommunicationException {
 		if (this.disconnected) {
-			throw new CommunicationException("Connection from " + this.urlOfLocalNode + " to remote host " + this.nodeURL + " is broken down. ");
+			throw new CommunicationException("Connection from " + this.urlOfLocalNode + " to remote host " + this.url + " is broken down. ");
 		}
 
 		logger.debug("makeSocketAvailable() called. " + "Testing for socket availability");
@@ -788,8 +788,8 @@ public final class SocketProxy extends Proxy implements Runnable {
 		}
 		if (this.mySocket == null) {
 			try {
-				logger.info("Opening new socket to " + this.nodeURL);
-				this.mySocket = new Socket(this.nodeURL.getHost(), this.nodeURL.getPort());
+				logger.info("Opening new socket to " + this.url);
+				this.mySocket = new Socket(this.url.getHost(), this.url.getPort());
 				logger.debug("Socket created: " + this.mySocket);
 				this.mySocket.setSoTimeout(5000);
 				this.out = new ObjectOutputStream(this.mySocket.getOutputStream());
@@ -812,7 +812,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 						throw new CommunicationException("Connection to remote host timed out!");
 					}
 					if (resp != null && resp.getStatus() == Response.REQUEST_SUCCESSFUL) {
-						Thread t = new Thread(this, "SocketProxy_Thread_" + this.nodeURL);
+						Thread t = new Thread(this, "SocketProxy_Thread_" + this.url);
 						t.start();
 					} else {
 						throw new CommunicationException("Establishing connection failed!");
@@ -823,9 +823,9 @@ public final class SocketProxy extends Proxy implements Runnable {
 					throw new CommunicationException("Unexpected result received! " + e.getMessage(), e);
 				}
 			} catch (UnknownHostException e) {
-				throw new CommunicationException("Unknown host: " + this.nodeURL.getHost());
+				throw new CommunicationException("Unknown host: " + this.url.getHost());
 			} catch (IOException ioe) {
-				throw new CommunicationException("Could not set up IO channel " + "to host " + this.nodeURL.getHost(), ioe);
+				throw new CommunicationException("Could not set up IO channel " + "to host " + this.url.getHost(), ioe);
 			}
 		}
 		logger.debug("makeSocketAvailable() finished. Socket " + this.mySocket);
@@ -847,13 +847,13 @@ public final class SocketProxy extends Proxy implements Runnable {
 	@Override
 	public void disconnect() {
 
-		logger.info("Destroying connection from " + this.urlOfLocalNode + " to " + this.nodeURL);
+		logger.info("Destroying connection from " + this.urlOfLocalNode + " to " + this.url);
 
 		synchronized (proxies) {
 			/*
 			 * added on 21.03.2006 by sven. See documentation of method createProxyKey(String, String);
 			 */
-			String proxyKey = SocketProxy.createProxyKey(this.urlOfLocalNode, this.nodeURL);
+			String proxyKey = SocketProxy.createProxyKey(this.urlOfLocalNode, this.url);
 			Object o = proxies.remove(proxyKey);
 		}
 		this.disconnected = true;
@@ -935,7 +935,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.makeSocketAvailable();
 
-		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getURL(), potentialPredecessor.getID());
+		RemoteNodeInfo nodeInfoToSend = new RemoteNodeInfo(potentialPredecessor.getUrl(), potentialPredecessor.getId());
 
 		/* prepare request for method notifyAndCopyEntries */
 		Request request = this.createRequest(MethodConstants.NOTIFY_AND_COPY, new Serializable[] { nodeInfoToSend });
@@ -983,7 +983,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	@Override
 	public String toString() {
 		if (this.id == null || this.mySocket == null) {
-			return "Unconnected SocketProxy from " + this.urlOfLocalNode + " to " + this.nodeURL;
+			return "Unconnected SocketProxy from " + this.urlOfLocalNode + " to " + this.url;
 		}
 		if (this.stringRepresentation == null) {
 			StringBuilder builder = new StringBuilder();
@@ -994,7 +994,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 			builder.append("] to Node[id=");
 			builder.append(this.id);
 			builder.append(", url=");
-			builder.append(this.nodeURL);
+			builder.append(this.url);
 			builder.append("]");
 			this.stringRepresentation = builder.toString();
 		}

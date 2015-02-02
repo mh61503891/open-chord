@@ -124,7 +124,7 @@ final class SuccessorList {
 		// if new ID is between last ID in list and this node's own ID _AND_
 		// successor list already has maximum allowed list, the new reference IS
 		// NOT added!
-		if (this.successors.size() >= this.capacity && nodeToAdd.getID().isInInterval(this.successors.get(this.successors.size() - 1).getID(), this.localID)) {
+		if (this.successors.size() >= this.capacity && nodeToAdd.getId().isInInterval(this.successors.get(this.successors.size() - 1).getId(), this.localID)) {
 			// do nothing
 			if (debug) {
 				this.logger.debug("Reference to new node " + nodeToAdd.toString() + " is not added to successor list, because the " + "list is already full and the new reference is "
@@ -139,7 +139,7 @@ final class SuccessorList {
 		boolean inserted = false;
 
 		for (int i = 0; i < this.successors.size() && !inserted; i++) {
-			if (nodeToAdd.getID().isInInterval(this.localID, this.successors.get(i).getID())) {
+			if (nodeToAdd.getId().isInInterval(this.localID, this.successors.get(i).getId())) {
 				this.successors.add(i, nodeToAdd);
 				if (info) {
 					this.logger.info("Added new reference at position " + i);
@@ -163,14 +163,14 @@ final class SuccessorList {
 		Node predecessor = this.references.getPredecessor();
 		if (predecessor != null) {
 			// common case: have a predecessor
-			fromID = predecessor.getID();
+			fromID = predecessor.getId();
 		} else {
 			// have no predecessor
 			// do I have any preceding node?
 			Node precedingNode = this.references.getClosestPrecedingNode(this.localID);
 			if (precedingNode != null) {
 				// use ID of preceding node
-				fromID = precedingNode.getID();
+				fromID = precedingNode.getId();
 			} else {
 				// use own ID (leads to replicating the whole ring); should not
 				// happen
@@ -260,7 +260,7 @@ final class SuccessorList {
 	public final String toString() {
 		StringBuilder result = new StringBuilder("Successor List:\n");
 		for (Node next : this.successors) {
-			result.append("  " + next.getID().toString() + ", " + next.getURL() + "\n");
+			result.append("  " + next.getId().toString() + ", " + next.getUrl() + "\n");
 		}
 		return result.toString();
 	}
@@ -284,7 +284,7 @@ final class SuccessorList {
 
 		for (int i = this.successors.size() - 1; i >= 0; i--) {
 			Node nextNode = this.successors.get(i);
-			if (nextNode.getID().isInInterval(this.localID, idToLookup)) {
+			if (nextNode.getId().isInInterval(this.localID, idToLookup)) {
 				return nextNode;
 			}
 		}

@@ -189,7 +189,7 @@ final class FingerTable {
 		for (int i = 0; i < this.remoteNodes.length; i++) {
 
 			ID startOfInterval = this.localID.addPowerOfTwo(i);
-			if (!startOfInterval.isInInterval(this.localID, proxy.getID())) {
+			if (!startOfInterval.isInInterval(this.localID, proxy.getId())) {
 				break;
 			}
 
@@ -201,7 +201,7 @@ final class FingerTable {
 
 			if (getEntry(i) == null) {
 				setEntry(i, proxy);
-			} else if (proxy.getID().isInInterval(this.localID, getEntry(i).getID())) {
+			} else if (proxy.getId().isInInterval(this.localID, getEntry(i).getId())) {
 				Node oldEntry = getEntry(i);
 				setEntry(i, proxy);
 				this.references.disconnectIfUnreferenced(oldEntry);
@@ -271,13 +271,13 @@ final class FingerTable {
 			} else if (lastNodeID == null) {
 				// found first reference in a row
 				lastIndex = i;
-				lastNodeID = next.getID();
-				lastNodeURL = next.getURL();
-			} else if (!lastNodeID.equals(next.getID())) {
+				lastNodeID = next.getId();
+				lastNodeURL = next.getUrl();
+			} else if (!lastNodeID.equals(next.getId())) {
 				// found different reference in finger table
 				result.append("  " + lastNodeID + ", " + lastNodeURL + " " + ((i - 1 - lastIndex > 0) ? "(" + lastIndex + "-" + (i - 1) + ")" : "(" + (i - 1) + ")") + "\n");
-				lastNodeID = next.getID();
-				lastNodeURL = next.getURL();
+				lastNodeID = next.getId();
+				lastNodeURL = next.getUrl();
 				lastIndex = i;
 			} else {
 				// found next reference in a row
@@ -384,7 +384,7 @@ final class FingerTable {
 		}
 		boolean debug = this.logger.isEnabledFor(DEBUG);
 		for (int i = this.remoteNodes.length - 1; i >= 0; i--) {
-			if (this.remoteNodes[i] != null && this.remoteNodes[i].getID().isInInterval(this.localID, key)) {
+			if (this.remoteNodes[i] != null && this.remoteNodes[i].getId().isInInterval(this.localID, key)) {
 				if (debug) {
 					this.logger.debug("Closest preceding node for ID " + key + " is " + this.remoteNodes[i].toString());
 				}

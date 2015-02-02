@@ -99,7 +99,7 @@ public final class NodeImpl extends Node {
 		this.impl = impl;
 		this.asyncExecutor = impl.getAsyncExecutor();
 		this.id = nodeID;
-		this.nodeURL = nodeURL;
+		this.url = nodeURL;
 		this.references = references;
 		this.entries = entries;
 		this.notifyLock = new ReentrantLock(true);
@@ -178,7 +178,7 @@ public final class NodeImpl extends Node {
 			// of
 			// the potential predecessor, including those equal to potential
 			// predecessor
-			Set<Entry> copiedEntries = this.entries.getEntriesInInterval(this.id, potentialPredecessor.getID());
+			Set<Entry> copiedEntries = this.entries.getEntriesInInterval(this.id, potentialPredecessor.getId());
 
 			return new RefsAndEntries(this.notify(potentialPredecessor), copiedEntries);
 		} finally {
@@ -206,7 +206,7 @@ public final class NodeImpl extends Node {
 
 		// Possible, but rare situation: a new node has joined which now is
 		// responsible for the id!
-		if ((this.references.getPredecessor() == null) || !toInsert.getId().isInInterval(this.references.getPredecessor().getID(), this.id)) {
+		if ((this.references.getPredecessor() == null) || !toInsert.getId().isInInterval(this.references.getPredecessor().getId(), this.id)) {
 			this.references.getPredecessor().insertEntry(toInsert);
 			return;
 		}
@@ -254,7 +254,7 @@ public final class NodeImpl extends Node {
 
 		// Possible, but rare situation: a new node has joined which now is
 		// responsible for the id!
-		if (this.references.getPredecessor() != null && !entryToRemove.getId().isInInterval(this.references.getPredecessor().getID(), this.id)) {
+		if (this.references.getPredecessor() != null && !entryToRemove.getId().isInInterval(this.references.getPredecessor().getId(), this.id)) {
 			this.references.getPredecessor().removeEntry(entryToRemove);
 			return;
 		}
@@ -326,9 +326,9 @@ public final class NodeImpl extends Node {
 
 		// Possible, but rare situation: a new node has joined which now is
 		// responsible for the id!
-		if (this.references.getPredecessor() != null && !id.isInInterval(this.references.getPredecessor().getID(), this.id)) {
+		if (this.references.getPredecessor() != null && !id.isInInterval(this.references.getPredecessor().getId(), this.id)) {
 			this.logger.fatal("The rare situation has occured at time " + System.currentTimeMillis() + ", id to look up=" + id + ", id of local node=" + this.id + ", id of predecessor="
-					+ this.references.getPredecessor().getID());
+					+ this.references.getPredecessor().getId());
 			return this.references.getPredecessor().retrieveEntries(id);
 		}
 
@@ -346,7 +346,7 @@ public final class NodeImpl extends Node {
 	final public void leavesNetwork(Node predecessor) {
 		if (this.logger.isEnabledFor(INFO)) {
 			this.logger.info("Leaves network invoked; " + this.id + ". Updating references.");
-			this.logger.info("New predecessor " + predecessor.getID());
+			this.logger.info("New predecessor " + predecessor.getId());
 		}
 		if (this.logger.isEnabledFor(DEBUG)) {
 			this.logger.debug("References before update: " + this.references.toString());

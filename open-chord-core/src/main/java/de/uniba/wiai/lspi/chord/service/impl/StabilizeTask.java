@@ -98,11 +98,11 @@ final class StabilizeTask implements Runnable {
 					 */
 					mySuccessorsPredecessorAndSuccessorList = successor.notify(this.parent);
 					if (infoEnabled) {
-						StabilizeTask.logger.info("Received response to notify request from " + "successor" + successor.getID());
+						StabilizeTask.logger.info("Received response to notify request from " + "successor" + successor.getId());
 					}
 				} catch (CommunicationException e) {
 					if (debugEnabled) {
-						StabilizeTask.logger.debug("Invocation of notify on node " + successor.getID() + " was not successful due to a " + "communication failure! Successor has "
+						StabilizeTask.logger.debug("Invocation of notify on node " + successor.getId() + " was not successful due to a " + "communication failure! Successor has "
 								+ "failed during stabilization! " + "Removing successor!", e);
 					}
 					this.references.removeReference(successor);
@@ -113,7 +113,7 @@ final class StabilizeTask implements Runnable {
 				 * 19.06.2007. sven Test if our successor has a different predecessor than this node.
 				 */
 				if ((mySuccessorsPredecessorAndSuccessorList.size() > 0) && (mySuccessorsPredecessorAndSuccessorList.get(0) != null)) {
-					if (!this.parent.getID().equals(mySuccessorsPredecessorAndSuccessorList.get(0).getID())) {
+					if (!this.parent.getId().equals(mySuccessorsPredecessorAndSuccessorList.get(0).getId())) {
 						/*
 						 * If it does not know us, we have to fetch all entries relevant for us.
 						 */
@@ -134,7 +134,7 @@ final class StabilizeTask implements Runnable {
 					}
 				}
 				if (infoEnabled) {
-					StabilizeTask.logger.info("Invocation of notify on node " + successor.getID() + " was successful");
+					StabilizeTask.logger.info("Invocation of notify on node " + successor.getId() + " was successful");
 				}
 			}
 		} catch (Exception e) {

@@ -88,7 +88,7 @@ public final class ThreadProxy extends Proxy {
 		this.registry = Registry.getRegistryInstance();
 		this.creatorURL = creatorURL1;
 		logger.debug("Trying to get id of node.");
-		ThreadEndpoint endpoint_ = this.registry.lookup(this.nodeURL);
+		ThreadEndpoint endpoint_ = this.registry.lookup(this.url);
 		logger.debug("Found endpoint " + endpoint_);
 		if (endpoint_ == null) {
 			throw new CommunicationException();
@@ -97,7 +97,7 @@ public final class ThreadProxy extends Proxy {
 	}
 
 	void reSetNodeID(ID id) {
-		this.setID(id);
+		this.setId(id);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public final class ThreadProxy extends Proxy {
 		}
 
 		if (this.endpoint == null) {
-			this.endpoint = this.registry.lookup(this.nodeURL);
+			this.endpoint = this.registry.lookup(this.url);
 			if (this.endpoint == null) {
 				throw new CommunicationException();
 			}
@@ -121,7 +121,7 @@ public final class ThreadProxy extends Proxy {
 		/*
 		 * Ensure that node id is set, if has not been set before.
 		 */
-		this.getID();
+		this.getId();
 
 		if (!this.hasBeenUsed) {
 			this.hasBeenUsed = true;
@@ -155,7 +155,7 @@ public final class ThreadProxy extends Proxy {
 	 *             If there is no endpoint this exception is thrown.
 	 */
 	public ThreadEndpoint getEndpoint() throws CommunicationException {
-		ThreadEndpoint ep = this.registry.lookup(this.nodeURL);
+		ThreadEndpoint ep = this.registry.lookup(this.url);
 		if (ep == null) {
 			throw new CommunicationException();
 		}
@@ -207,7 +207,7 @@ public final class ThreadProxy extends Proxy {
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("[ThreadProxy ");
-		buffer.append(this.nodeURL);
+		buffer.append(this.url);
 		buffer.append("]");
 		return buffer.toString();
 	}
@@ -216,7 +216,7 @@ public final class ThreadProxy extends Proxy {
 	public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getURL());
+		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getUrl());
 
 		logger.debug("Trying to execute notify().");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -264,14 +264,14 @@ public final class ThreadProxy extends Proxy {
 	 * @return The copy of this.
 	 */
 	private ThreadProxy cloneMeAt(URL creatorUrl) {
-		return new ThreadProxy(creatorUrl, this.nodeURL, this.id);
+		return new ThreadProxy(creatorUrl, this.url, this.id);
 	}
 
 	@Override
 	public void leavesNetwork(Node predecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy predecessorProxy = new ThreadProxy(this.creatorURL, predecessor.getURL());
+		ThreadProxy predecessorProxy = new ThreadProxy(this.creatorURL, predecessor.getUrl());
 
 		logger.debug("Trying to execute leavesNetwork(" + predecessor + ").");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
@@ -310,7 +310,7 @@ public final class ThreadProxy extends Proxy {
 	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.checkValidity();
 
-		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getURL());
+		ThreadProxy potentialPredecessorProxy = new ThreadProxy(this.creatorURL, potentialPredecessor.getUrl());
 
 		logger.debug("Trying to execute notifyAndCopyEntries().");
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
