@@ -81,7 +81,7 @@ final class FixFingerTask implements Runnable {
 
 		try {
 
-			int nextFingerToFix = this.random.nextInt(this.localID.getLength());
+			int nextFingerToFix = this.random.nextInt(this.localID.getBitLength());
 			if (this.logger.isEnabledFor(DEBUG)) {
 				this.logger.debug("fixFingers tries to get finger for key " + this.localID.addPowerOfTwo(nextFingerToFix).toString());
 			}

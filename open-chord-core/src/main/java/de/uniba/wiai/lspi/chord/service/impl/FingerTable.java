@@ -73,7 +73,7 @@ final class FingerTable {
 
 		this.references = references;
 		this.localID = localID;
-		this.remoteNodes = new Node[localID.getLength()];
+		this.remoteNodes = new Node[localID.getBitLength()];
 	}
 
 	/**
@@ -318,7 +318,7 @@ final class FingerTable {
 		// determine node reference with next larger ID than ID of node
 		// reference to remove
 		Node referenceForReplacement = null;
-		for (int i = this.localID.getLength() - 1; i >= 0; i--) {
+		for (int i = this.localID.getBitLength() - 1; i >= 0; i--) {
 			Node n = this.getEntry(i);
 			if (node1.equals(n)) {
 				break;
