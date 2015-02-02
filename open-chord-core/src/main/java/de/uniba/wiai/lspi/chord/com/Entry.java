@@ -12,8 +12,8 @@ import de.uniba.wiai.lspi.chord.data.ID;
 
 /**
  * @author Karsten Loesing
- * @version 1.0.5
  * @author Masayuki Higashino
+ * @version 1.0.5
  */
 @AllArgsConstructor
 @Getter

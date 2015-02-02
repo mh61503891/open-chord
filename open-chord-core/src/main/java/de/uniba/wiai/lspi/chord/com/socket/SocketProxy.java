@@ -29,20 +29,20 @@ import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Endpoint;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.Proxy;
+import de.uniba.wiai.lspi.chord.com.Nodes;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.util.logging.Logger;
 
 /**
- * This is the implementation of {@link Proxy} for the socket protocol. This connects to the {@link SocketEndpoint endpoint} of the node it represents by means
+ * This is the implementation of {@link Nodes} for the socket protocol. This connects to the {@link SocketEndpoint endpoint} of the node it represents by means
  * of <code>Sockets</code>.
  *
  * @author sven
  * @version 1.0.5
  */
-public final class SocketProxy extends Proxy implements Runnable {
+public final class SocketProxy extends Node implements Runnable {
 
 	/**
 	 * The logger for instances of this class.
@@ -197,7 +197,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @param nodeID1
 	 */
 	protected SocketProxy(URL url, URL urlOfLocalNode1, ID nodeID1) {
-		super(url);
+		this.url = url;
 		if (url == null || urlOfLocalNode1 == null || nodeID1 == null) {
 			throw new IllegalArgumentException("null");
 		}
@@ -214,7 +214,7 @@ public final class SocketProxy extends Proxy implements Runnable {
 	 * @throws CommunicationException
 	 */
 	private SocketProxy(URL url, URL urlOfLocalNode1) throws CommunicationException {
-		super(url);
+		this.url = url;
 		if (url == null || urlOfLocalNode1 == null) {
 			throw new IllegalArgumentException("URLs must not be null!");
 		}

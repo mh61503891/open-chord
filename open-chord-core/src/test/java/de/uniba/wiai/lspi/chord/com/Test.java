@@ -36,7 +36,7 @@ public class Test {
 			ep.listen();
 			ep.acceptEntries();
 
-			Node proxy = Proxy.createConnection(new URL(URL1), new URL(URL2));
+			Node proxy = Nodes.create(new URL(URL1), new URL(URL2));
 
 			List<Long> millis = new LinkedList<Long>();
 

@@ -24,7 +24,6 @@ import java.util.Set;
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.Proxy;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.util.logging.Logger;
@@ -290,8 +289,7 @@ final class References {
 		this.successorList.addSuccessor(newReference);
 
 		if (debug) {
-			this.logger
-			.debug("Attempted to add reference " + newReference.getId().toString() + " to finger table and successor list. Whether it fit " + "or not depends on those data structures.");
+			this.logger.debug("Attempted to add reference " + newReference.getId().toString() + " to finger table and successor list. Whether it fit " + "or not depends on those data structures.");
 		}
 	}
 
@@ -342,7 +340,7 @@ final class References {
 		}
 
 		if (!this.containsReference(removedReference)) {
-			if (!(removedReference instanceof Proxy)) {
+			if (!(removedReference instanceof Node)) {
 				this.logger.error("Attempt to disconnect unused reference failed");
 				throw new RuntimeException("Reference should be of type Proxy");
 			}
@@ -561,7 +559,7 @@ final class References {
 	 * @throws RuntimeException
 	 */
 	private void checkIfProxy(Node node) {
-		if (!(node instanceof Proxy)) {
+		if (!(node instanceof Node)) {
 			String msg = "Trying to use local node " + node + " with references. This is not possible." + "If you see this Exception contact the developers!";
 			RuntimeException e = new RuntimeException(msg);
 			this.logger.fatal(msg, e);

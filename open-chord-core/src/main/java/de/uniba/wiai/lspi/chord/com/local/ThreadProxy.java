@@ -18,19 +18,19 @@ import java.util.Set;
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.Proxy;
+import de.uniba.wiai.lspi.chord.com.Nodes;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 import de.uniba.wiai.lspi.util.logging.Logger;
 
 /**
- * This class represents a {@link Proxy} for the protocol that allows to be build a (local) chord network within one JVM.
+ * This class represents a {@link Nodes} for the protocol that allows to be build a (local) chord network within one JVM.
  *
  * @author sven
  * @version 1.0.5
  */
-public final class ThreadProxy extends Proxy {
+public final class ThreadProxy extends Node {
 
 	/**
 	 * The logger for instances of this.
@@ -68,7 +68,7 @@ public final class ThreadProxy extends Proxy {
 	 * @param nodeID1
 	 */
 	private ThreadProxy(URL creatorURL1, URL url, ID nodeID1) {
-		super(url);
+		this.url = url;
 		this.registry = Registry.getRegistryInstance();
 		this.id = nodeID1;
 		this.creatorURL = creatorURL1;
@@ -84,7 +84,7 @@ public final class ThreadProxy extends Proxy {
 	 * @throws CommunicationException
 	 */
 	public ThreadProxy(URL creatorURL1, URL url) throws CommunicationException {
-		super(url);
+		this.url = url;
 		this.registry = Registry.getRegistryInstance();
 		this.creatorURL = creatorURL1;
 		logger.debug("Trying to get id of node.");

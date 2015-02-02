@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.Proxy;
+import de.uniba.wiai.lspi.chord.com.Nodes;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
@@ -455,7 +455,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 		// create proxy for outgoing connection to bootstrap node
 		Node bootstrapNode;
 		try {
-			bootstrapNode = Proxy.createConnection(this.localURL, bootstrapURL);
+			bootstrapNode = Nodes.create(this.localURL, bootstrapURL);
 		} catch (CommunicationException e) {
 			throw new ServiceException("An error occured when creating a proxy for outgoing " + "connection to bootstrap node! Join operation" + "failed!", e);
 

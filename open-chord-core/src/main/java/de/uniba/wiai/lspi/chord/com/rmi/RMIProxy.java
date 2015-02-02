@@ -21,12 +21,11 @@ import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Endpoint;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
-import de.uniba.wiai.lspi.chord.com.Proxy;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
 
-public final class RMIProxy extends Proxy {
+public final class RMIProxy extends Node {
 
 	private static final String NAME_IN_REGISTRY = RMIEndpoint.NAME_IN_REGISTRY;
 
@@ -49,7 +48,7 @@ public final class RMIProxy extends Proxy {
 	 * @param url
 	 */
 	RMIProxy(RemoteNodeInfo rNode, URL url) {
-		super(rNode.getUrl());
+		this.url = rNode.getUrl();
 		if (url == null) {
 			throw new IllegalArgumentException("URL of local node must not be null!");
 		}
@@ -67,7 +66,7 @@ public final class RMIProxy extends Proxy {
 	 * @throws CommunicationException
 	 */
 	RMIProxy(URL localURL, URL url) throws RemoteException, CommunicationException {
-		super(url);
+		this.url = url;
 		if (url == null) {
 			throw new IllegalArgumentException("URL of local node must not be null!");
 		}

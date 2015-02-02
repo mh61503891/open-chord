@@ -172,8 +172,8 @@ public abstract class Endpoint {
 	 * Tell this endpoint that the node is now able to receive messages that request the storage and removal of entries.
 	 */
 	public final void acceptEntries() {
-		state = State.ACCEPT_ENTRIES;
-		notify(state);
+		setState(State.ACCEPT_ENTRIES);
+		notify(getState());
 		entriesAcceptable();
 	}
 
@@ -189,7 +189,7 @@ public abstract class Endpoint {
 	 */
 	public final void disconnect() {
 		state = State.STARTED;
-		notify(this.state);
+		notify(state);
 		closeConnections();
 		synchronized (endpoints) {
 			endpoints.remove(node.url);
