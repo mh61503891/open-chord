@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import de.uniba.wiai.lspi.chord.com.local.ThreadEndpoint;
 import de.uniba.wiai.lspi.chord.com.rmi.RMIEndpoint;
 import de.uniba.wiai.lspi.chord.com.socket.SocketEndpoint;
@@ -50,18 +52,18 @@ import de.uniba.wiai.lspi.util.logging.Logger;
  * </p>
  *
  * @author Sven Kaffille
+ * @author Masayuki Higashino
  * @version 1.0.5
  */
+@ToString
 public abstract class Endpoint {
 
-	/**
-	 * Logger for this class.
-	 */
 	private static final Logger logger = Logger.getLogger(Endpoint.class);
 
 	/**
 	 * Map containing all endpoints. Key: {@link URL}. Value: <code>Endpoint</code>.
 	 */
+	// TODO refactor
 	protected static final Map<URL, Endpoint> endpoints = new HashMap<URL, Endpoint>();
 
 	@Getter
@@ -97,7 +99,8 @@ public abstract class Endpoint {
 		METHODS_ALLOWED_IN_ACCEPT_ENTRIES = Collections.unmodifiableList(list);
 	}
 
-	private State state;
+	private State state = State.STARTED;
+	private Set<EndpointStateListener> listeners = new HashSet<EndpointStateListener>();
 
 	/**
 	 * The {@link URL}that can be used to connect to this endpoint.
@@ -110,11 +113,6 @@ public abstract class Endpoint {
 	protected Node node;
 
 	/**
-	 * {@link EndpointStateListener listeners}interested in state changes of this endpoint.
-	 */
-	private Set<EndpointStateListener> listeners = new HashSet<EndpointStateListener>();
-
-	/**
 	 * @param node1
 	 *            The {@link Node} this is the Endpoint for.
 	 * @param url1
@@ -124,83 +122,49 @@ public abstract class Endpoint {
 		logger.info("Endpoint for " + node1 + " with url " + url1 + "created.");
 		this.node = node1;
 		this.url = url1;
-		this.state = State.STARTED;
 	}
 
-	/**
-	 * @return Returns the node.
-	 */
-	public final Node getNode() {
-		return this.node;
+	public Node getNode() {
+		return node;
 	}
 
-	/**
-	 * Register a listener that is notified when the state of this endpoint changes.
-	 *
-	 * @param listener
-	 *            The listener to register.
-	 */
-	public final void register(EndpointStateListener listener) {
-		this.listeners.add(listener);
-	}
-
-	/**
-	 * Remove a listener that listened for state changes of this endpoint.
-	 *
-	 * @param listener
-	 *            The listener instance to be removed.
-	 */
-	public final void deregister(EndpointStateListener listener) {
-		this.listeners.remove(listener);
-	}
-
-	// TODO rename!!
-	/**
-	 * Method to notify listeners about a change in state of this endpoint.
-	 *
-	 * @param s
-	 *            The integer identifying the state to that the endpoint switched. See {@link Endpoint#ACCEPT_ENTRIES}, {@link Endpoint#DISCONNECTED},
-	 *            {@link Endpoint#LISTENING}, and {@link Endpoint#STARTED}.
-	 */
-	protected void notify(State s) {
-		logger.debug("notifying state change.");
-		synchronized (this.listeners) {
-			logger.debug("Size of listeners = " + this.listeners.size());
-			for (EndpointStateListener listener : this.listeners) {
-				listener.notify(s);
-			}
-		}
-	}
-
-	/**
-	 * Get the {@link URL}of this endpoint.
-	 *
-	 * @return The {@link URL}that can be used to connect to this endpoint.
-	 */
 	public URL getURL() {
-		return this.url;
+		return url;
 	}
 
 	public Endpoint.State getState() {
 		return state;
 	}
 
-	/**
-	 * @param state
-	 *            The state to set.
-	 */
-	protected final void setState(State state) {
+	protected void setState(State state) {
 		this.state = state;
-		this.notify(state);
+		notify(state);
+	}
+
+	public void register(EndpointStateListener listener) {
+		listeners.add(listener);
+	}
+
+	public void deregister(EndpointStateListener listener) {
+		listeners.remove(listener);
+	}
+
+	protected void notify(State s) {
+		logger.debug("notifying state change.");
+		synchronized (listeners) {
+			logger.debug("Size of listeners = " + listeners.size());
+			for (EndpointStateListener listener : listeners)
+				listener.notify(s);
+		}
 	}
 
 	/**
 	 * Tell this endpoint that it can listen to incoming messages from other chord nodes. TODO: This method may throw an exception when starting to listen for
 	 * incoming connections.
 	 */
-	public final void listen() {
-		this.state = State.LISTENING;
-		this.notify(this.state);
+	public void listen() {
+		state = State.LISTENING;
+		this.notify(state);
 		this.openConnections();
 	}
 
@@ -215,9 +179,9 @@ public abstract class Endpoint {
 	 */
 	public final void acceptEntries() {
 		logger.info("acceptEntries() called.");
-		this.state = State.ACCEPT_ENTRIES;
-		this.notify(this.state);
-		this.entriesAcceptable();
+		state = State.ACCEPT_ENTRIES;
+		notify(state);
+		entriesAcceptable();
 	}
 
 	/**
@@ -231,12 +195,12 @@ public abstract class Endpoint {
 	 * Tell this endpoint to disconnect and close all connections. If this method has been invoked the endpoint must be not reused!!!
 	 */
 	public final void disconnect() {
-		this.state = State.STARTED;
+		state = State.STARTED;
 		logger.info("Disconnecting.");
-		this.notify(this.state);
-		this.closeConnections();
+		notify(this.state);
+		closeConnections();
 		synchronized (endpoints) {
-			endpoints.remove(this.node.nodeURL);
+			endpoints.remove(node.nodeURL);
 		}
 	}
 
@@ -244,6 +208,14 @@ public abstract class Endpoint {
 	 * This method has to be overwritten by sub classes and is invoked by {@link #disconnect()}to close all connections from the chord network.
 	 */
 	protected abstract void closeConnections();
+
+	public static Endpoint getEndpoint(URL url) {
+		synchronized (endpoints) {
+			Endpoint endpoint = endpoints.get(url);
+			logger.debug("Endpoint for URL " + url + ": " + endpoint);
+			return endpoint;
+		}
+	}
 
 	/**
 	 * Create the endpoints for the protocol given by <code>url</code>. An URL must have a known protocol. An endpoint for an {@link URL} can only be create
@@ -258,65 +230,23 @@ public abstract class Endpoint {
 	 * @throws RuntimeException
 	 *             This can occur if any error that cannot be handled by this method occurs during endpoint creation.
 	 */
-	public static Endpoint createEndpoint(Node node, URL url) {
-
+	public static Endpoint createEndpoint(Node node, @NonNull URL url) {
 		synchronized (endpoints) {
-			if (endpoints.containsKey(url)) {
+			if (endpoints.containsKey(url))
 				throw new RuntimeException("Endpoint already created!");
-			}
 			Endpoint endpoint = null;
-
-			// TODO irgendwann �ber properties l�sen
-			if (url == null) {
-				throw new IllegalArgumentException("Url must not be null! ");
-			}
 			if (url.getProtocol().equals(URL.KNOWN_PROTOCOLS.get(URL.SOCKET_PROTOCOL))) {
-
 				endpoint = new SocketEndpoint(node, url);
 			} else if (url.getProtocol().equals(URL.KNOWN_PROTOCOLS.get(URL.LOCAL_PROTOCOL))) {
-
 				endpoint = new ThreadEndpoint(node, url);
 			} else if (url.getProtocol().equals(URL.KNOWN_PROTOCOLS.get(URL.RMI_PROTOCOL))) {
-
 				endpoint = new RMIEndpoint(node, url);
 			} else {
-				// does not happen ??
 				throw new IllegalArgumentException("Url does not contain a " + "supported protocol " + "(" + url.getProtocol() + ")!");
 			}
-
 			endpoints.put(url, endpoint);
-
 			return endpoint;
 		}
-	}
-
-	/**
-	 * Get the <code>Endpoint</code> for the given <code>url</code>.
-	 *
-	 * @param url
-	 * @return The endpoint for provided <code>url</code>.
-	 */
-	public static Endpoint getEndpoint(URL url) {
-		synchronized (endpoints) {
-			Endpoint ep = endpoints.get(url);
-			logger.debug("Endpoint for URL " + url + ": " + ep);
-			return ep;
-		}
-	}
-
-	/**
-	 * Overwritten from {@link java.lang.Object}.
-	 *
-	 * @return String representation of this endpoint.
-	 */
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("[Endpoint for ");
-		buffer.append(this.node);
-		buffer.append(" with URL ");
-		buffer.append(this.url);
-		return buffer.toString();
 	}
 
 }
