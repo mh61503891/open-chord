@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -58,8 +56,6 @@ import de.uniba.wiai.lspi.chord.data.URL;
  */
 @ToString
 public abstract class Endpoint {
-
-	private static final Logger logger = Logger.getLogger(Endpoint.class.getName());
 
 	/**
 	 * Map containing all endpoints. Key: {@link URL}. Value: <code>Endpoint</code>.
@@ -114,15 +110,14 @@ public abstract class Endpoint {
 	protected Node node;
 
 	/**
-	 * @param node1
+	 * @param node
 	 *            The {@link Node} this is the Endpoint for.
-	 * @param url1
+	 * @param url
 	 *            The {@link URL} that describes the location of this endpoint.
 	 */
-	protected Endpoint(Node node1, URL url1) {
-		logger.info("Endpoint for " + node1 + " with url " + url1 + "created.");
-		this.node = node1;
-		this.url = url1;
+	protected Endpoint(Node node, URL url) {
+		this.node = node;
+		this.url = url;
 	}
 
 	public Node getNode() {
@@ -151,9 +146,7 @@ public abstract class Endpoint {
 	}
 
 	protected void notify(State s) {
-		logger.log(Level.FINE, "notifying state change.");
 		synchronized (listeners) {
-			logger.log(Level.FINE, "Size of listeners = " + listeners.size());
 			for (EndpointStateListener listener : listeners)
 				listener.notify(s);
 		}
@@ -179,7 +172,6 @@ public abstract class Endpoint {
 	 * Tell this endpoint that the node is now able to receive messages that request the storage and removal of entries.
 	 */
 	public final void acceptEntries() {
-		logger.info("acceptEntries() called.");
 		state = State.ACCEPT_ENTRIES;
 		notify(state);
 		entriesAcceptable();
@@ -197,7 +189,6 @@ public abstract class Endpoint {
 	 */
 	public final void disconnect() {
 		state = State.STARTED;
-		logger.log(Level.INFO, "Disconnecting.");
 		notify(this.state);
 		closeConnections();
 		synchronized (endpoints) {
@@ -212,9 +203,7 @@ public abstract class Endpoint {
 
 	public static Endpoint getEndpoint(URL url) {
 		synchronized (endpoints) {
-			Endpoint endpoint = endpoints.get(url);
-			logger.log(Level.FINE, "Endpoint for URL " + url + ": " + endpoint);
-			return endpoint;
+			return endpoints.get(url);
 		}
 	}
 
