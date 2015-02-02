@@ -82,7 +82,7 @@ final class RequestHandler extends Thread implements EndpointStateListener {
 	 * The state that the {@link SocketEndpoint endpoint}, that started this request handler, is currently in. See constants of class
 	 * {@link de.uniba.wiai.lspi.chord.com.Endpoint}.
 	 */
-	private int state;
+	private Endpoint.State state;
 
 	/**
 	 * The {@link SocketEndpoint endpoint}that started this handler.
@@ -343,7 +343,7 @@ final class RequestHandler extends Thread implements EndpointStateListener {
 
 		logger.debug(method + " allowed? " + !(Collections.binarySearch(Endpoint.METHODS_ALLOWED_IN_ACCEPT_ENTRIES, method) >= 0));
 		synchronized (this.waitingThreads) {
-			while ((!(this.state == Endpoint.ACCEPT_ENTRIES)) && (this.connected) && ((Collections.binarySearch(Endpoint.METHODS_ALLOWED_IN_ACCEPT_ENTRIES, method) >= 0))) {
+			while ((!(this.state == Endpoint.State.ACCEPT_ENTRIES)) && (this.connected) && ((Collections.binarySearch(Endpoint.METHODS_ALLOWED_IN_ACCEPT_ENTRIES, method) >= 0))) {
 
 				Thread currentThread = Thread.currentThread();
 				boolean debug = logger.isEnabledFor(DEBUG);
@@ -423,7 +423,7 @@ final class RequestHandler extends Thread implements EndpointStateListener {
 		return this.connected;
 	}
 
-	public void notify(int newState) {
+	public void notify(Endpoint.State newState) {
 		logger.debug("notify(" + newState + ") called.");
 		this.state = newState;
 		/* notify all threads waiting for a state change */

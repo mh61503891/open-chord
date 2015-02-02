@@ -1,13 +1,3 @@
-/***************************************************************************
- * * RMIEndpoint.java * ------------------- * date : 22.02.2008, 14:10:40 * copyright : (C) 2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer
- * Praktische Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * * *
- ***************************************************************************/
-
-/***************************************************************************
- * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
- * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
- * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
- ***************************************************************************/
 package de.uniba.wiai.lspi.chord.com.rmi;
 
 import java.rmi.AccessException;
@@ -59,7 +49,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 		try {
 			UnicastRemoteObject.unexportObject(this, true);
 			registry.unbind(NAME_IN_REGISTRY + this.url.toString());
-			this.setState(STARTED);
+			this.setState(Endpoint.State.STARTED);
 		} catch (AccessException e) {
 		} catch (RemoteException e) {
 		} catch (NotBoundException e) {
@@ -68,7 +58,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 
 	@Override
 	protected void entriesAcceptable() {
-		this.setState(ACCEPT_ENTRIES);
+		this.setState(Endpoint.State.ACCEPT_ENTRIES);
 	}
 
 	@Override
@@ -80,7 +70,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 			Remote remoteRef;
 			remoteNode = (RemoteNode) UnicastRemoteObject.exportObject(this);
 			registry.bind(NAME_IN_REGISTRY + this.url.toString(), remoteNode);
-			this.setState(LISTENING);
+			this.setState(Endpoint.State.LISTENING);
 		} catch (RemoteException e) {
 			throw new RuntimeException(e);
 		} catch (AlreadyBoundException e) {

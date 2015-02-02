@@ -41,11 +41,6 @@ public final class ThreadEndpoint extends Endpoint {
 	private Logger logger = null;
 
 	/**
-	 * Constant indicating that this has crashed.
-	 */
-	private final static int CRASHED = Integer.MAX_VALUE;
-
-	/**
 	 * The {@link Registry registry}of local endpoints.
 	 */
 	protected final Registry registry;
@@ -119,7 +114,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public Node findSuccessor(ID key) throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.LISTENING);
+		this.waitFor(Endpoint.State.LISTENING);
 		/* delegate invocation to node. */
 		this.notifyInvocationListeners(InvocationListener.FIND_SUCCESSOR);
 		Node n = this.node.findSuccessor(key);
@@ -139,7 +134,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public void insertEntry(Entry entry) throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.ACCEPT_ENTRIES);
+		this.waitFor(Endpoint.State.ACCEPT_ENTRIES);
 		/* delegate invocation to node. */
 		this.notifyInvocationListeners(InvocationListener.INSERT_ENTRY);
 		this.node.insertEntry(entry);
@@ -152,7 +147,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public void removeEntry(Entry entry) throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.ACCEPT_ENTRIES);
+		this.waitFor(Endpoint.State.ACCEPT_ENTRIES);
 		/* delegate invocation to node. */
 		this.notifyInvocationListeners(InvocationListener.REMOVE_ENTRY);
 		this.node.removeEntry(entry);
@@ -166,7 +161,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.LISTENING);
+		this.waitFor(Endpoint.State.LISTENING);
 		this.notifyInvocationListeners(InvocationListener.NOTIFY);
 		this.logger.debug("Invoking notify on local node " + this.node);
 		List<Node> n = this.node.notify(potentialPredecessor);
@@ -189,7 +184,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public void ping() throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.LISTENING);
+		this.waitFor(Endpoint.State.LISTENING);
 		this.notifyInvocationListeners(InvocationListener.PING);
 		this.node.ping();
 		this.notifyInvocationListenersFinished(InvocationListener.PING);
@@ -202,7 +197,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public Set<Entry> retrieveEntries(ID id) throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.ACCEPT_ENTRIES);
+		this.waitFor(Endpoint.State.ACCEPT_ENTRIES);
 		this.notifyInvocationListeners(InvocationListener.RETRIEVE_ENTRIES);
 		Set<Entry> s = this.node.retrieveEntries(id);
 		this.notifyInvocationListenersFinished(InvocationListener.RETRIEVE_ENTRIES);
@@ -227,7 +222,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public void removeReplicas(ID sendingNodeID, Set<Entry> entriesToRemove) throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.LISTENING);
+		this.waitFor(Endpoint.State.LISTENING);
 		this.notifyInvocationListeners(InvocationListener.REMOVE_REPLICAS);
 		this.node.removeReplicas(sendingNodeID, entriesToRemove);
 		this.notifyInvocationListenersFinished(InvocationListener.REMOVE_REPLICAS);
@@ -239,7 +234,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public void insertReplicas(Set<Entry> entries) throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.LISTENING);
+		this.waitFor(Endpoint.State.LISTENING);
 		this.notifyInvocationListeners(InvocationListener.INSERT_REPLICAS);
 		this.node.insertReplicas(entries);
 		this.notifyInvocationListenersFinished(InvocationListener.INSERT_REPLICAS);
@@ -252,7 +247,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 */
 	public RefsAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException {
 		this.checkIfCrashed();
-		this.waitFor(Endpoint.ACCEPT_ENTRIES);
+		this.waitFor(Endpoint.State.ACCEPT_ENTRIES);
 		this.notifyInvocationListeners(InvocationListener.NOTIFY_AND_COPY);
 		RefsAndEntries refs = this.node.notifyAndCopyEntries(potentialPredecessor);
 		List<Node> nodes = refs.getReferences();
@@ -272,17 +267,17 @@ public final class ThreadEndpoint extends Endpoint {
 	/**
 	 * Wait for the endpoint to get into given state.
 	 *
-	 * @param state_
+	 * @param state
 	 *            The state to wait for.
 	 * @throws CommunicationException
 	 */
-	private void waitFor(int state_) throws CommunicationException {
+	private void waitFor(Endpoint.State state) throws CommunicationException {
 		synchronized (this.lock) {
-			while (this.getState() < state_) {
+			while (getState().getOrder() < state.getOrder()) {
 				try {
-					this.logger.debug(Thread.currentThread() + " waiting for state: " + state_);
+					this.logger.debug(Thread.currentThread() + " waiting for state: " + state);
 					this.lock.wait();
-					if (state_ == CRASHED) {
+					if (state == Endpoint.State.CRASHED) {
 						throw new CommunicationException("Connection destroyed!");
 					}
 				} catch (InterruptedException t) {
@@ -351,7 +346,7 @@ public final class ThreadEndpoint extends Endpoint {
 		}
 
 		this.registry.removeProxiesInUseBy(this.getURL());
-		this.setState(CRASHED);
+		this.setState(Endpoint.State.CRASHED);
 		this.notifyWaitingThreads();
 		/* kill threads of node (gefrickelt) */
 		ChordImpl impl = ChordImplAccess.fetchChordImplOfNode(this.node);
@@ -384,7 +379,7 @@ public final class ThreadEndpoint extends Endpoint {
 	 * @throws CommunicationException
 	 */
 	private void checkIfCrashed() throws CommunicationException {
-		if ((this.getState() == CRASHED) || (this.getState() < Endpoint.LISTENING)) {
+		if (getState().isCrashed()) {
 			this.logger.debug(this + " has crashed. Throwing Exception.");
 			throw new CommunicationException();
 		}

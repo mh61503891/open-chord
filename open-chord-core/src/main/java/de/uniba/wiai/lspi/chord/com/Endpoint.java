@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Getter;
 import de.uniba.wiai.lspi.chord.com.local.ThreadEndpoint;
 import de.uniba.wiai.lspi.chord.com.rmi.RMIEndpoint;
 import de.uniba.wiai.lspi.chord.com.socket.SocketEndpoint;
@@ -63,26 +64,25 @@ public abstract class Endpoint {
 	 */
 	protected static final Map<URL, Endpoint> endpoints = new HashMap<URL, Endpoint>();
 
-	// TODO: Create enum for state.
-	/**
-	 * Integer representation of state.
-	 */
-	public static final int STARTED = 0;
+	@Getter
+	public enum State {
+		STARTED(-1), LISTENING(1), ACCEPT_ENTRIES(2), DISCONNECTED(3), CRASHED(Integer.MAX_VALUE);
 
-	/**
-	 * Integer representation of state.
-	 */
-	public static final int LISTENING = 1;
+		private int order;
 
-	/**
-	 * Integer representation of state.
-	 */
-	public static final int ACCEPT_ENTRIES = 2;
+		private State(int order) {
+			this.order = order;
+		}
 
-	/**
-	 * Integer representation of state.
-	 */
-	public static final int DISCONNECTED = 3;
+		public boolean isRunning() {
+			return this == LISTENING || this == ACCEPT_ENTRIES;
+		}
+
+		public boolean isCrashed() {
+			return this == CRASHED;
+		}
+
+	}
 
 	/**
 	 * Array containing names of methods only allowed to be invoked in state {@link #ACCEPT_ENTRIES}. Remember to eventually edit this array if you change the
@@ -97,10 +97,7 @@ public abstract class Endpoint {
 		METHODS_ALLOWED_IN_ACCEPT_ENTRIES = Collections.unmodifiableList(list);
 	}
 
-	/**
-	 * The current state of this endpoint.
-	 */
-	private int state = -1;
+	private State state;
 
 	/**
 	 * The {@link URL}that can be used to connect to this endpoint.
@@ -127,7 +124,7 @@ public abstract class Endpoint {
 		logger.info("Endpoint for " + node1 + " with url " + url1 + "created.");
 		this.node = node1;
 		this.url = url1;
-		this.state = STARTED;
+		this.state = State.STARTED;
 	}
 
 	/**
@@ -165,7 +162,7 @@ public abstract class Endpoint {
 	 *            The integer identifying the state to that the endpoint switched. See {@link Endpoint#ACCEPT_ENTRIES}, {@link Endpoint#DISCONNECTED},
 	 *            {@link Endpoint#LISTENING}, and {@link Endpoint#STARTED}.
 	 */
-	protected void notify(int s) {
+	protected void notify(State s) {
 		logger.debug("notifying state change.");
 		synchronized (this.listeners) {
 			logger.debug("Size of listeners = " + this.listeners.size());
@@ -184,20 +181,17 @@ public abstract class Endpoint {
 		return this.url;
 	}
 
-	/**
-	 * @return Returns the state.
-	 */
-	public final int getState() {
-		return this.state;
+	public Endpoint.State getState() {
+		return state;
 	}
 
 	/**
-	 * @param state1
+	 * @param state
 	 *            The state to set.
 	 */
-	protected final void setState(int state1) {
-		this.state = state1;
-		this.notify(state1);
+	protected final void setState(State state) {
+		this.state = state;
+		this.notify(state);
 	}
 
 	/**
@@ -205,7 +199,7 @@ public abstract class Endpoint {
 	 * incoming connections.
 	 */
 	public final void listen() {
-		this.state = LISTENING;
+		this.state = State.LISTENING;
 		this.notify(this.state);
 		this.openConnections();
 	}
@@ -221,7 +215,7 @@ public abstract class Endpoint {
 	 */
 	public final void acceptEntries() {
 		logger.info("acceptEntries() called.");
-		this.state = ACCEPT_ENTRIES;
+		this.state = State.ACCEPT_ENTRIES;
 		this.notify(this.state);
 		this.entriesAcceptable();
 	}
@@ -237,7 +231,7 @@ public abstract class Endpoint {
 	 * Tell this endpoint to disconnect and close all connections. If this method has been invoked the endpoint must be not reused!!!
 	 */
 	public final void disconnect() {
-		this.state = STARTED;
+		this.state = State.STARTED;
 		logger.info("Disconnecting.");
 		this.notify(this.state);
 		this.closeConnections();

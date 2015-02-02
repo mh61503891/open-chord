@@ -84,7 +84,7 @@ public final class SocketEndpoint extends Endpoint implements Runnable {
 				SocketEndpoint.logger.debug("Trying to open server socket on port " + this.url.getPort());
 			}
 			this.mySocket = new ServerSocket(this.url.getPort());
-			this.setState(LISTENING);
+			this.setState(State.LISTENING);
 			if (debug) {
 				SocketEndpoint.logger.debug("Server socket opened on port " + this.url.getPort() + ". Starting listener thread.");
 			}
@@ -109,7 +109,7 @@ public final class SocketEndpoint extends Endpoint implements Runnable {
 		if (debug) {
 			SocketEndpoint.logger.debug("entriesAcceptable() called");
 		}
-		this.setState(ACCEPT_ENTRIES);
+		this.setState(State.ACCEPT_ENTRIES);
 	}
 
 	/*
@@ -118,7 +118,7 @@ public final class SocketEndpoint extends Endpoint implements Runnable {
 	 */
 	@Override
 	protected void closeConnections() {
-		this.setState(STARTED);
+		this.setState(State.STARTED);
 		/* try to close socket */
 		try {
 			this.mySocket.close();
@@ -142,7 +142,7 @@ public final class SocketEndpoint extends Endpoint implements Runnable {
 	public void run() {
 
 		// Cleaner cleaner = new Cleaner();
-		while (this.getState() > STARTED) {
+		while (getState().isRunning()) {
 			if (debug) {
 				SocketEndpoint.logger.debug("Waiting for incoming connection.");
 			}
@@ -173,7 +173,7 @@ public final class SocketEndpoint extends Endpoint implements Runnable {
 				}
 			} catch (IOException e) {
 				/* Can this happen? */
-				if ((this.getState() > STARTED)) {
+				if (getState().isRunning()) {
 					if (debug) {
 						SocketEndpoint.logger.debug("Could not accept connection from other node!", e);
 					}
