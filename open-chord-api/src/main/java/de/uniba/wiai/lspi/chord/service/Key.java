@@ -18,6 +18,6 @@ public interface Key {
 	 *
 	 * @return Byte representation of the key.
 	 */
-	public abstract byte[] getBytes();
+	byte[] getBytes();
 
 }

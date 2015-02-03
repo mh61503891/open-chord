@@ -14,33 +14,33 @@ public interface Report {
 	 *
 	 * @return Formatted String containing all entries stored on this node.
 	 */
-	public abstract String printEntries();
+	String printEntries();
 
 	/**
 	 * Returns a formatted String containing all references stored in the finger table of this node.
 	 *
 	 * @return Formatted String containing all references stored in the finger table of this node.
 	 */
-	public abstract String printFingerTable();
+	String printFingerTable();
 
 	/**
 	 * Returns a formatted String containing all references stored in the successor list of this node.
 	 *
 	 * @return Formatted String containing all references stored in the successor list of this node.
 	 */
-	public abstract String printSuccessorList();
+	String printSuccessorList();
 
 	/**
 	 * Returns a formatted String containing all references stored on this node.
 	 *
 	 * @return Formatted String containing all references stored on this node.
 	 */
-	public abstract String printReferences();
+	String printReferences();
 
 	/**
 	 * Returns a formatted String containing the predecessor reference of this node.
 	 *
 	 * @return Formatted String containing the predecessor reference of this node.
 	 */
-	public abstract String printPredecessor();
+	String printPredecessor();
 }

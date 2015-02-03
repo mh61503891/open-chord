@@ -27,7 +27,7 @@ public interface ChordFuture {
 	 * @return Any Throwable that occured during execution of the method associated with this. May be <code>null</code>. If {@link #isDone()} returns
 	 *         <code>true</code> and this returns <code>null</code> the associated method has been executed successfully.
 	 */
-	public abstract Throwable getThrowable();
+	Throwable getThrowable();
 
 	/**
 	 * Method to test if the method associated with this has been finished. This method does not block the calling thread.
@@ -36,7 +36,7 @@ public interface ChordFuture {
 	 * @throws ServiceException
 	 *             Thrown if the execution has not been successful. Contains the {@link Throwable} that can be obtained by {@link #getThrowable()} as cause.
 	 */
-	public abstract boolean isDone() throws ServiceException;
+	boolean isDone() throws ServiceException;
 
 	/**
 	 * This method blocks the calling thread until the execution of the method associated with this has been finished.
@@ -46,6 +46,6 @@ public interface ChordFuture {
 	 * @throws InterruptedException
 	 *             Occurs if the thread waiting with help of this method has been interrupted.
 	 */
-	public abstract void waitForBeingDone() throws ServiceException, InterruptedException;
+	void waitForBeingDone() throws ServiceException, InterruptedException;
 
 }

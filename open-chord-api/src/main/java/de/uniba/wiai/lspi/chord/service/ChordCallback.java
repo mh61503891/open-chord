@@ -41,7 +41,7 @@ public interface ChordCallback {
 	 *            Any {@link Throwable} that occured during execution of {@link AsynChord#retrieve(Key, ChordCallback)}. This is <code>null</code> if retrieval
 	 *            of <code>key</code> was succesful.
 	 */
-	public void retrieved(Key key, Set<Serializable> entries, Throwable t);
+	void retrieved(Key key, Set<Serializable> entries, Throwable t);
 
 	/**
 	 * This method is called, when a call to {@link AsynChord#insert(Key, Serializable, ChordCallback)} has been finished.
@@ -54,7 +54,7 @@ public interface ChordCallback {
 	 *            Any {@link Throwable} that occured during execution of {@link AsynChord#insert(Key, Serializable, ChordCallback)}. This is <code>null</code>
 	 *            if insertion of <code>key</code> and <code>entry</code> was succesful.
 	 */
-	public void inserted(Key key, Serializable entry, Throwable t);
+	void inserted(Key key, Serializable entry, Throwable t);
 
 	/**
 	 * This is the callback method for removal of the <code>entry</code> with <code>key</code>.
@@ -67,6 +67,6 @@ public interface ChordCallback {
 	 *            Any {@link Throwable} that occured during execution of {@link AsynChord#remove(Key, Serializable, ChordCallback)}. This is <code>null</code>
 	 *            if removal of <code>entry</code> was succesful.
 	 */
-	public void removed(Key key, Serializable entry, Throwable t);
+	void removed(Key key, Serializable entry, Throwable t);
 
 }

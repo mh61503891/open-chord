@@ -24,5 +24,6 @@ public interface ChordRetrievalFuture extends ChordFuture {
 	 * @throws InterruptedException
 	 *             If the thread, which invokes this method, has been interrupted while waiting for the result.
 	 */
-	public Set<Serializable> getResult() throws ServiceException, InterruptedException;
+	Set<Serializable> getResult() throws ServiceException, InterruptedException;
+
 }
