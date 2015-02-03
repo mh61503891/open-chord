@@ -1,13 +1,3 @@
-/***************************************************************************
- * * ThreadProxy.java * ------------------- * date : 12.08.2004 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer Praktische
- * Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
- ***************************************************************************/
-
-/***************************************************************************
- * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
- * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
- * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
- ***************************************************************************/
 package de.uniba.wiai.lspi.chord.com.local;
 
 import java.util.Arrays;
@@ -27,77 +17,38 @@ import de.uniba.wiai.lspi.util.logging.Logger;
 /**
  * This class represents a {@link Nodes} for the protocol that allows to be build a (local) chord network within one JVM.
  *
- * @author sven
+ * @author Sven Kaffille
+ * @author Masayuki Higashino
  * @version 1.0.5
  */
-public final class ThreadProxy extends Node {
+public class ThreadProxy extends Node {
 
-	/**
-	 * The logger for instances of this.
-	 */
 	private static final Logger logger = Logger.getLogger(ThreadProxy.class.getName());
-
-	/**
-	 * Reference to the {@link Registry registry}singleton.
-	 */
 	protected Registry registry = null;
-
-	/**
-	 * The {@link URL}of the node that created this proxy.
-	 */
 	protected URL creatorURL;
-
-	/**
-	 * Indicates if this proxy can be used for communication;
-	 */
 	protected boolean isValid = true;
-
-	/**
-	 * Indicates if this proxy has been used to make a invocation.
-	 */
 	protected boolean hasBeenUsed = false;
-
-	/**
-	 * The endpoint, to which this delegates method invocations.
-	 */
 	private ThreadEndpoint endpoint = null;
 
-	/**
-	 * @param creatorURL1
-	 * @param url
-	 * @param nodeID1
-	 */
-	private ThreadProxy(URL creatorURL1, URL url, ID nodeID1) {
-		this.url = url;
+	private ThreadProxy(URL src, URL dst, ID nodeID1) {
 		this.registry = Registry.getRegistryInstance();
+		this.url = dst;
 		this.id = nodeID1;
-		this.creatorURL = creatorURL1;
+		this.creatorURL = src;
 	}
 
-	/**
-	 * Creates a Proxy for the <code>jchordlocal</code> protocol. The host name part of {@link URL url}is the name of the node in the <code>jchordlocal</code>
-	 * protocol.
-	 *
-	 * @param creatorURL1
-	 * @param url
-	 *            The {@link URL}of the node this proxy represents.
-	 * @throws CommunicationException
-	 */
-	public ThreadProxy(URL creatorURL1, URL url) throws CommunicationException {
-		this.url = url;
+	public ThreadProxy(URL src, URL dst) throws CommunicationException {
+		this.creatorURL = src;
+		this.url = dst;
 		this.registry = Registry.getRegistryInstance();
-		this.creatorURL = creatorURL1;
-		logger.debug("Trying to get id of node.");
-		ThreadEndpoint endpoint_ = this.registry.lookup(this.url);
-		logger.debug("Found endpoint " + endpoint_);
-		if (endpoint_ == null) {
+		ThreadEndpoint endpoint_ = registry.lookup(dst);
+		if (endpoint_ == null)
 			throw new CommunicationException();
-		}
 		this.id = endpoint_.getNodeID();
 	}
 
 	void reSetNodeID(ID id) {
-		this.setId(id);
+		setId(id);
 	}
 
 	/**
@@ -106,41 +57,28 @@ public final class ThreadProxy extends Node {
 	 * @throws CommunicationException
 	 */
 	private void checkValidity() throws CommunicationException {
-
-		if (!this.isValid) {
+		if (!isValid)
 			throw new CommunicationException("No valid connection!");
-		}
-
-		if (this.endpoint == null) {
-			this.endpoint = this.registry.lookup(this.url);
-			if (this.endpoint == null) {
+		if (endpoint == null) {
+			endpoint = registry.lookup(this.url);
+			if (endpoint == null)
 				throw new CommunicationException();
-			}
 		}
 
 		/*
 		 * Ensure that node id is set, if has not been set before.
 		 */
-		this.getId();
-
-		if (!this.hasBeenUsed) {
-			this.hasBeenUsed = true;
-			Registry.getRegistryInstance().addProxyUsedBy(this.creatorURL, this);
+		getId();
+		if (!hasBeenUsed) {
+			hasBeenUsed = true;
+			Registry.getRegistryInstance().addProxyUsedBy(creatorURL, this);
 		}
 	}
 
-	/**
-	 * Test if this Proxy is valid.
-	 *
-	 * @return <code>true</code> if this Proxy is valid.
-	 */
 	public boolean isValid() {
-		return this.isValid;
+		return isValid;
 	}
 
-	/**
-	 * Invalidates this proxy.
-	 */
 	public void invalidate() {
 		this.isValid = false;
 		this.endpoint = null;
@@ -155,28 +93,24 @@ public final class ThreadProxy extends Node {
 	 *             If there is no endpoint this exception is thrown.
 	 */
 	public ThreadEndpoint getEndpoint() throws CommunicationException {
-		ThreadEndpoint ep = this.registry.lookup(this.url);
-		if (ep == null) {
+		ThreadEndpoint ep = registry.lookup(url);
+		if (ep == null)
 			throw new CommunicationException();
-		}
 		return ep;
 	}
 
 	@Override
 	public Node findSuccessor(ID key) throws CommunicationException {
-		this.checkValidity();
+		checkValidity();
 		// ThreadEndpoint endpoint = this.registry.lookup(this.nodeName);
 		// if (endpoint == null) {
 		// throw new CommunicationException();
 		// }
-		Node succ = this.endpoint.findSuccessor(key);
+		Node succsessor = endpoint.findSuccessor(key);
 		try {
-			logger.debug("Creating clone of proxy " + succ);
-			ThreadProxy temp = (ThreadProxy) succ;
-			logger.debug("Clone created");
-			return temp.cloneMeAt(this.creatorURL);
+			ThreadProxy temp = (ThreadProxy) succsessor;
+			return temp.cloneMeAt(creatorURL);
 		} catch (Throwable t) {
-			logger.debug("Exception during clone of proxy.", t);
 			throw new CommunicationException(t);
 		}
 	}
@@ -264,7 +198,7 @@ public final class ThreadProxy extends Node {
 	 * @return The copy of this.
 	 */
 	private ThreadProxy cloneMeAt(URL creatorUrl) {
-		return new ThreadProxy(creatorUrl, this.url, this.id);
+		return new ThreadProxy(creatorUrl, url, id);
 	}
 
 	@Override
@@ -323,8 +257,6 @@ public final class ThreadProxy extends Node {
 
 	@Override
 	public void disconnect() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

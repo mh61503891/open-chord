@@ -32,7 +32,7 @@ import java.util.Vector;
 
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Endpoint;
-import de.uniba.wiai.lspi.chord.com.EndpointStateListener;
+import de.uniba.wiai.lspi.chord.com.EndpointListener;
 import de.uniba.wiai.lspi.chord.com.Entry;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
@@ -46,7 +46,7 @@ import de.uniba.wiai.lspi.util.logging.Logger;
  * @author sven
  * @version 1.0.5
  */
-final class RequestHandler extends Thread implements EndpointStateListener {
+final class RequestHandler extends Thread implements EndpointListener {
 
 	/**
 	 * Logger for this class.
@@ -423,7 +423,7 @@ final class RequestHandler extends Thread implements EndpointStateListener {
 		return this.connected;
 	}
 
-	public void notify(Endpoint.State newState) {
+	public void onStateChanged(Endpoint.State newState) {
 		logger.debug("notify(" + newState + ") called.");
 		this.state = newState;
 		/* notify all threads waiting for a state change */

@@ -97,7 +97,7 @@ public abstract class Endpoint {
 	}
 
 	private State state = State.STARTED;
-	private Set<EndpointStateListener> listeners = new HashSet<EndpointStateListener>();
+	private Set<EndpointListener> listeners = new HashSet<EndpointListener>();
 
 	/**
 	 * The {@link URL}that can be used to connect to this endpoint.
@@ -137,18 +137,18 @@ public abstract class Endpoint {
 		notify(state);
 	}
 
-	public void register(EndpointStateListener listener) {
+	public void register(EndpointListener listener) {
 		listeners.add(listener);
 	}
 
-	public void deregister(EndpointStateListener listener) {
+	public void deregister(EndpointListener listener) {
 		listeners.remove(listener);
 	}
 
 	protected void notify(State s) {
 		synchronized (listeners) {
-			for (EndpointStateListener listener : listeners)
-				listener.notify(s);
+			for (EndpointListener listener : listeners)
+				listener.onStateChanged(s);
 		}
 	}
 
