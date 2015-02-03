@@ -1,13 +1,3 @@
-/***************************************************************************
- * * PropertiesLoader.java * ------------------- * date : 10.08.2005 * copyright : (C) 2004-2008 Distributed and * Mobile Systems Group * Lehrstuhl fuer
- * Praktische Informatik * Universitaet Bamberg * http://www.uni-bamberg.de/pi/ * email : sven.kaffille@uni-bamberg.de * karsten.loesing@uni-bamberg.de * * *
- ***************************************************************************/
-
-/***************************************************************************
- * * This program is free software; you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free
- * Software Foundation; either version 2 of the License, or * (at your option) any later version. * * A copy of the license can be found in the license.txt file
- * supplied * with this software or at: http://www.gnu.org/copyleft/gpl.html * *
- ***************************************************************************/
 package de.uniba.wiai.lspi.chord.service;
 
 import java.io.IOException;
@@ -18,7 +8,8 @@ import java.util.Properties;
  * this class tries to load the property file named {@link #STANDARD_PROPERTY_FILE} which must be located in the classpath. If another file should be loaded,
  * its file name has to be set as value for property {@link #PROPERTY_WHERE_TO_FIND_PROPERTY_FILE}.
  *
- * @author karsten
+ * @author Karsten Loesing
+ * @author Masayuki Higashino
  * @version 1.0.5
  */
 public final class PropertiesLoader {
