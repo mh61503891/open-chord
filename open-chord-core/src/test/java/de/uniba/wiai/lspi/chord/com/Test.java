@@ -25,7 +25,7 @@ public class Test {
 		try {
 			if (args[0] != null) {
 				NodeImpl node = new NodeImpl(URL2);
-				Endpoint ep = Endpoint.createEndpoint(node, node.url);
+				Endpoint ep = Endpoints.createEndpoint(node, node.url);
 				ep.listen();
 				ep.acceptEntries();
 			}
@@ -33,7 +33,7 @@ public class Test {
 			// TODO: handle exception
 
 			NodeImpl node = new NodeImpl(URL1);
-			Endpoint ep = Endpoint.createEndpoint(node, node.url);
+			Endpoint ep = Endpoints.createEndpoint(node, node.url);
 			ep.listen();
 			ep.acceptEntries();
 

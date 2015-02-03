@@ -23,6 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Endpoint;
+import de.uniba.wiai.lspi.chord.com.Endpoints;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.Entry;
@@ -106,7 +107,7 @@ public final class NodeImpl extends Node {
 		this.notifyLock = new ReentrantLock(true);
 
 		// create endpoint for incoming connections
-		this.myEndpoint = Endpoint.createEndpoint(this, nodeURL);
+		this.myEndpoint = Endpoints.createEndpoint(this, nodeURL);
 		this.myEndpoint.listen();
 	}
 
@@ -129,7 +130,7 @@ public final class NodeImpl extends Node {
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @throws CommunicationException
 	 */
 	@Override

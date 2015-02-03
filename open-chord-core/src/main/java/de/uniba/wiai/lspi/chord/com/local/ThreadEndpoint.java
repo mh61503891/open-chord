@@ -19,6 +19,7 @@ import java.util.Set;
 
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Endpoint;
+import de.uniba.wiai.lspi.chord.com.Endpoints;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.Entry;
@@ -369,7 +370,7 @@ public final class ThreadEndpoint extends Endpoint {
 				t.printStackTrace();
 			}
 		}
-		Endpoint.endpoints.remove(this.url);
+		Endpoints.endpoints.remove(this.url);
 		this.invocationListeners = null;
 	}
 
