@@ -108,7 +108,7 @@ final class RequestHandler extends Thread implements EndpointListener {
 	 *             Thrown if the establishment of a connection over the provided socket fails.
 	 */
 	RequestHandler(Node node_, Socket connection_, SocketEndpoint ep) throws IOException {
-		super("RequestHandler_" + ep.getURL());
+		super("RequestHandler_" + ep.getUrl());
 
 		if (RequestHandler.logger.isEnabledFor(INFO)) {
 			RequestHandler.logger.info("Initialising RequestHandler. Socket " + connection_ + ", " + ", Endpoint " + ep);
@@ -409,7 +409,7 @@ final class RequestHandler extends Thread implements EndpointListener {
 				/* if closing of socket fails, that does not matter!??? */
 				logger.debug("Exception while closing socket " + this.connection);
 			}
-			this.endpoint.deregister(this);
+			this.endpoint.unregister(this);
 		}
 		logger.debug("Disconnected.");
 	}

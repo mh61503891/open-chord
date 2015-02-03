@@ -316,7 +316,7 @@ public final class ThreadEndpoint extends Endpoint {
 	@Override
 	protected void closeConnections() {
 		this.registry.unbind(this);
-		this.registry.removeProxiesInUseBy(this.getURL());
+		this.registry.removeProxiesInUseBy(this.getUrl());
 		/** state has changed. notify waiting threads */
 		this.notifyWaitingThreads();
 	}
@@ -338,14 +338,14 @@ public final class ThreadEndpoint extends Endpoint {
 	public void crash() {
 		this.logger.debug("crash() invoked!");
 		this.registry.unbind(this);
-		List<ThreadProxy> proxies = this.registry.getProxiesInUseBy(this.getURL());
+		List<ThreadProxy> proxies = this.registry.getProxiesInUseBy(this.getUrl());
 		if (proxies != null) {
 			for (ThreadProxy p : proxies) {
 				p.invalidate();
 			}
 		}
 
-		this.registry.removeProxiesInUseBy(this.getURL());
+		this.registry.removeProxiesInUseBy(this.getUrl());
 		this.setState(Endpoint.State.CRASHED);
 		this.notifyWaitingThreads();
 		/* kill threads of node (gefrickelt) */
@@ -400,8 +400,8 @@ public final class ThreadEndpoint extends Endpoint {
 	public boolean equals(Object obj) {
 		if (obj instanceof ThreadEndpoint) {
 			ThreadEndpoint ep = (ThreadEndpoint) obj;
-			URL epURL = ep.getURL();
-			return ((epURL.equals(this.getURL())) && (ep.hashCode() == this.hashCode()));
+			URL epURL = ep.getUrl();
+			return ((epURL.equals(this.getUrl())) && (ep.hashCode() == this.hashCode()));
 		} else {
 			return false;
 		}

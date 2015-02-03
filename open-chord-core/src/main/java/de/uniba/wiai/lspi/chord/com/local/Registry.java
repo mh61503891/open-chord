@@ -111,7 +111,7 @@ public final class Registry {
 	 *            The {@link ThreadEndpoint}to register.
 	 */
 	public void bind(ThreadEndpoint endpoint) {
-		URL name = endpoint.getURL();
+		URL name = endpoint.getUrl();
 		logger.debug("Binding endpoint: " + endpoint + "with name " + name);
 		/* if there is not already an endpoint for that name */
 		Object temp = this.registeredEndpoints.get(name);
@@ -132,7 +132,7 @@ public final class Registry {
 	 */
 	public void unbind(ThreadEndpoint endpoint) {
 		logger.debug("Unbinding endpoint: " + endpoint);
-		this.registeredEndpoints.remove(endpoint.getURL());
+		this.registeredEndpoints.remove(endpoint.getUrl());
 		logger.debug("Endpoint " + endpoint + " removed from registry.");
 	}
 

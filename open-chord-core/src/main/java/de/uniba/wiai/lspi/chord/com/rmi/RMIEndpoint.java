@@ -108,11 +108,11 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	}
 
 	public void leavesNetwork(RemoteNodeInfo predecessor) throws RemoteException, CommunicationException {
-		this.node.leavesNetwork(new RMIProxy(predecessor, this.getURL()));
+		this.node.leavesNetwork(new RMIProxy(predecessor, this.getUrl()));
 	}
 
 	public List<RemoteNodeInfo> notify(RemoteNodeInfo potentialPredecessor) throws RemoteException, CommunicationException {
-		List<Node> nodes = this.node.notify(new RMIProxy(potentialPredecessor, this.getURL()));
+		List<Node> nodes = this.node.notify(new RMIProxy(potentialPredecessor, this.getUrl()));
 		List<RemoteNodeInfo> result = new LinkedList<RemoteNodeInfo>();
 		for (Node node : nodes) {
 			result.add(this.createInfo(node));
@@ -122,7 +122,7 @@ public final class RMIEndpoint extends Endpoint implements RemoteNode {
 	}
 
 	public RemoteRefsAndEntries notifyAndCopyEntries(RemoteNodeInfo potentialPredecessor) throws RemoteException, CommunicationException {
-		ReferencesAndEntries raes = this.node.notifyAndCopyEntries(new RMIProxy(potentialPredecessor, this.getURL()));
+		ReferencesAndEntries raes = this.node.notifyAndCopyEntries(new RMIProxy(potentialPredecessor, this.getUrl()));
 		List<RemoteNodeInfo> rNodes = new LinkedList<RemoteNodeInfo>();
 		List<Node> nodes = raes.getReferences();
 		for (Node node : nodes) {

@@ -57,12 +57,6 @@ import de.uniba.wiai.lspi.chord.data.URL;
 @ToString
 public abstract class Endpoint {
 
-	/**
-	 * Map containing all endpoints. Key: {@link URL}. Value: <code>Endpoint</code>.
-	 */
-	// TODO refactor
-	protected static final Map<URL, Endpoint> endpoints = new HashMap<URL, Endpoint>();
-
 	@Getter
 	public enum State {
 		STARTED(-1), LISTENING(1), ACCEPT_ENTRIES(2), DISCONNECTED(3), CRASHED(Integer.MAX_VALUE);
@@ -84,11 +78,15 @@ public abstract class Endpoint {
 	}
 
 	/**
+	 * Map containing all endpoints. Key: {@link URL}. Value: <code>Endpoint</code>.
+	 */
+	// TODO remove static list
+	protected static final Map<URL, Endpoint> endpoints = new HashMap<URL, Endpoint>();
+	/**
 	 * Array containing names of methods only allowed to be invoked in state {@link #ACCEPT_ENTRIES}. Remember to eventually edit this array if you change the
 	 * methods in interface {@link Node}. The method names contained in this array must be sorted!
 	 */
 	public static final List<String> METHODS_ALLOWED_IN_ACCEPT_ENTRIES;
-
 	static {
 		String[] temp = new String[] { "insertEntry", "removeEntry", "retrieveEntries" };
 		Arrays.sort(temp);
@@ -96,110 +94,59 @@ public abstract class Endpoint {
 		METHODS_ALLOWED_IN_ACCEPT_ENTRIES = Collections.unmodifiableList(list);
 	}
 
-	private State state = State.STARTED;
-	private Set<EndpointListener> listeners = new HashSet<EndpointListener>();
-
-	/**
-	 * The {@link URL}that can be used to connect to this endpoint.
-	 */
-	protected URL url;
-
-	/**
-	 * The {@link Node node}on which this endpoint invokes methods.
-	 */
+	@Getter
 	protected Node node;
+	@Getter
+	protected URL url;
+	@Getter
+	private State state;
+	private Set<EndpointListener> listeners;
 
-	/**
-	 * @param node
-	 *            The {@link Node} this is the Endpoint for.
-	 * @param url
-	 *            The {@link URL} that describes the location of this endpoint.
-	 */
 	protected Endpoint(Node node, URL url) {
 		this.node = node;
 		this.url = url;
-	}
-
-	public Node getNode() {
-		return node;
-	}
-
-	public URL getURL() {
-		return url;
-	}
-
-	public Endpoint.State getState() {
-		return state;
-	}
-
-	protected void setState(State state) {
-		this.state = state;
-		notify(state);
+		this.state = Endpoint.State.STARTED;
+		this.listeners = new HashSet<EndpointListener>();
 	}
 
 	public void register(EndpointListener listener) {
 		listeners.add(listener);
 	}
 
-	public void deregister(EndpointListener listener) {
+	public void unregister(EndpointListener listener) {
 		listeners.remove(listener);
 	}
 
-	protected void notify(State s) {
-		synchronized (listeners) {
-			for (EndpointListener listener : listeners)
-				listener.onStateChanged(s);
-		}
-	}
-
 	/**
-	 * Tell this endpoint that it can listen to incoming messages from other chord nodes. TODO: This method may throw an exception when starting to listen for
-	 * incoming connections.
+	 * Tell this endpoint that it can listen to incoming messages from other chord nodes.
 	 */
+	// TODO This method may throw an exception when starting to listen for incoming connections.
 	public void listen() {
 		state = State.LISTENING;
-		this.notify(state);
+		this.onStateChanged(state);
 		this.openConnections();
 	}
 
 	/**
-	 * To implemented by sub classes. This method is called by {@link #listen()}to make it possible for other chord nodes to connect to the node on that this
-	 * endpoint invocates methods. TODO: This method may throw an exception when starting to listen for incoming connections.
-	 */
-	protected abstract void openConnections();
-
-	/**
 	 * Tell this endpoint that the node is now able to receive messages that request the storage and removal of entries.
 	 */
-	public final void acceptEntries() {
+	public void acceptEntries() {
 		setState(State.ACCEPT_ENTRIES);
-		notify(getState());
+		onStateChanged(getState());
 		entriesAcceptable();
 	}
 
 	/**
-	 * This method has to be overwritten by subclasses. It is called from {@link #acceptEntries()}to indicate that entries can now be accepted. So maybe if an
-	 * endpoint queues incoming requests for storage or removal of entries this requests can be answered when endpoint changes it state to
-	 * <code>ACCEPT_ENTRIES</code>.
-	 */
-	protected abstract void entriesAcceptable();
-
-	/**
 	 * Tell this endpoint to disconnect and close all connections. If this method has been invoked the endpoint must be not reused!!!
 	 */
-	public final void disconnect() {
+	public void disconnect() {
 		state = State.STARTED;
-		notify(state);
+		onStateChanged(state);
 		closeConnections();
 		synchronized (endpoints) {
 			endpoints.remove(node.url);
 		}
 	}
-
-	/**
-	 * This method has to be overwritten by sub classes and is invoked by {@link #disconnect()}to close all connections from the chord network.
-	 */
-	protected abstract void closeConnections();
 
 	public static Endpoint getEndpoint(URL url) {
 		synchronized (endpoints) {
@@ -238,5 +185,36 @@ public abstract class Endpoint {
 			return endpoint;
 		}
 	}
+
+	protected void setState(Endpoint.State state) {
+		this.state = state;
+		onStateChanged(state);
+	}
+
+	protected void onStateChanged(Endpoint.State state) {
+		synchronized (listeners) {
+			for (EndpointListener listener : listeners)
+				listener.onStateChanged(state);
+		}
+	}
+
+	/**
+	 * To implemented by sub classes. This method is called by {@link #listen()}to make it possible for other chord nodes to connect to the node on that this
+	 * endpoint invocates methods.
+	 */
+	// TODO This method may throw an exception when starting to listen for incoming connections.
+	protected abstract void openConnections();
+
+	/**
+	 * This method has to be overwritten by sub classes and is invoked by {@link #disconnect()} to close all connections from the chord network.
+	 */
+	protected abstract void closeConnections();
+
+	/**
+	 * This method has to be overwritten by subclasses. It is called from {@link #acceptEntries()} to indicate that entries can now be accepted. So maybe if an
+	 * endpoint queues incoming requests for storage or removal of entries this requests can be answered when endpoint changes it state to
+	 * <code>ACCEPT_ENTRIES</code>.
+	 */
+	protected abstract void entriesAcceptable();
 
 }
