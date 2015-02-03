@@ -132,15 +132,6 @@ public abstract class Endpoint {
 		state = State.STARTED;
 		onStateChanged(state);
 		closeConnections();
-		synchronized (Endpoints.endpoints) {
-			Endpoints.endpoints.remove(node.url);
-		}
-	}
-
-	public static Endpoint getEndpoint(URL url) {
-		synchronized (Endpoints.endpoints) {
-			return Endpoints.endpoints.get(url);
-		}
 	}
 
 	protected void setState(Endpoint.State state) {

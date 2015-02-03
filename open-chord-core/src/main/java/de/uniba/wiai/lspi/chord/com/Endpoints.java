@@ -49,4 +49,21 @@ public class Endpoints {
 			return endpoint;
 		}
 	}
+
+	public static Endpoint getEndpoint(URL url) {
+		synchronized (Endpoints.endpoints) {
+			return Endpoints.endpoints.get(url);
+		}
+	}
+
+	public static void removeEndpoint(URL url) {
+		synchronized (Endpoints.endpoints) {
+			Endpoints.endpoints.remove(url);
+		}
+	}
+
+	public static void removeEndpoint(Node node) {
+		removeEndpoint(node.getUrl());
+	}
+
 }

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
-import de.uniba.wiai.lspi.chord.com.Endpoint;
+import de.uniba.wiai.lspi.chord.com.Endpoints;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
 import de.uniba.wiai.lspi.chord.data.Entry;
@@ -56,7 +56,7 @@ public final class RMIProxy extends Node {
 		this.id = rNode.getNodeID();
 		this.localURL = url;
 		this.connected = true;
-		this.localEndpoint = (RMIEndpoint) Endpoint.getEndpoint(this.localURL);
+		this.localEndpoint = (RMIEndpoint) Endpoints.getEndpoint(this.localURL);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public final class RMIProxy extends Node {
 		}
 		this.id = this.remoteNode.getNodeID();
 		this.connected = true;
-		this.localEndpoint = (RMIEndpoint) Endpoint.getEndpoint(this.localURL);
+		this.localEndpoint = (RMIEndpoint) Endpoints.getEndpoint(this.localURL);
 	}
 
 	/**

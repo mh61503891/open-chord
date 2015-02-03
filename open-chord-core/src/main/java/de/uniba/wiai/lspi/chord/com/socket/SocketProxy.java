@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.uniba.wiai.lspi.chord.com.CommunicationException;
-import de.uniba.wiai.lspi.chord.com.Endpoint;
+import de.uniba.wiai.lspi.chord.com.Endpoints;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.com.Nodes;
 import de.uniba.wiai.lspi.chord.com.ReferencesAndEntries;
@@ -434,7 +434,7 @@ public final class SocketProxy extends Node implements Runnable {
 			try {
 				RemoteNodeInfo nodeInfo = (RemoteNodeInfo) response.getResult();
 				if (nodeInfo.getNodeURL().equals(this.urlOfLocalNode)) {
-					return Endpoint.getEndpoint(this.urlOfLocalNode).getNode();
+					return Endpoints.getEndpoint(this.urlOfLocalNode).getNode();
 				} else {
 					return create(nodeInfo.getNodeURL(), this.urlOfLocalNode, nodeInfo.getNodeID());
 				}
@@ -519,7 +519,7 @@ public final class SocketProxy extends Node implements Runnable {
 				List<Node> nodes = new LinkedList<Node>();
 				for (RemoteNodeInfo nodeInfo : references) {
 					if (nodeInfo.getNodeURL().equals(this.urlOfLocalNode)) {
-						nodes.add(Endpoint.getEndpoint(this.urlOfLocalNode).getNode());
+						nodes.add(Endpoints.getEndpoint(this.urlOfLocalNode).getNode());
 					} else {
 						nodes.add(create(nodeInfo.getNodeURL(), this.urlOfLocalNode, nodeInfo.getNodeID()));
 					}
@@ -960,7 +960,7 @@ public final class SocketProxy extends Node implements Runnable {
 				List<RemoteNodeInfo> references = result.getNodeInfos();
 				for (RemoteNodeInfo nodeInfo : references) {
 					if (nodeInfo.getNodeURL().equals(this.urlOfLocalNode)) {
-						newReferences.add(Endpoint.getEndpoint(this.urlOfLocalNode).getNode());
+						newReferences.add(Endpoints.getEndpoint(this.urlOfLocalNode).getNode());
 					} else {
 						newReferences.add(create(nodeInfo.getNodeURL(), this.urlOfLocalNode, nodeInfo.getNodeID()));
 					}

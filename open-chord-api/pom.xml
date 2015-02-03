@@ -7,13 +7,7 @@
 		<artifactId>open-chord</artifactId>
 		<version>1.0.5-SNAPSHOT</version>
 	</parent>
-	<artifactId>open-chord-console</artifactId>
-	<name>open-chord-console</name>
-	<dependencies>
-		<dependency>
-			<groupId>open-chord-core</groupId>
-			<artifactId>open-chord-core</artifactId>
-			<version>1.0.5-SNAPSHOT</version>
-		</dependency>
-	</dependencies>
+	<groupId>open-chord-api</groupId>
+	<artifactId>open-chord-api</artifactId>
+	<name>open-chord-api</name>
 </project>
