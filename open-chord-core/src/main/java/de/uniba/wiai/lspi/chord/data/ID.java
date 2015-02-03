@@ -126,6 +126,7 @@ public class ID implements Comparable<ID>, Serializable {
 		return new ID(copy);
 	}
 
+	@Override
 	public int compareTo(ID o) throws ClassCastException {
 		if (getBitLength() != o.getBitLength())
 			throw new ClassCastException(getBitLength() + " != " + o.getBitLength());
