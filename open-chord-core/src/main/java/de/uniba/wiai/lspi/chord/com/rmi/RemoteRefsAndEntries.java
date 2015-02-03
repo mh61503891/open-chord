@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import de.uniba.wiai.lspi.chord.com.Entry;
+import de.uniba.wiai.lspi.chord.data.Entry;
 
 /**
  * This class represents entries and {@link RemoteNodeInfo references} that have to be transferred between two nodes.

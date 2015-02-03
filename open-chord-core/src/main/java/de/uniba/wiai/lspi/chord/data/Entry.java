@@ -1,4 +1,4 @@
-package de.uniba.wiai.lspi.chord.com;
+package de.uniba.wiai.lspi.chord.data;
 
 import java.io.Serializable;
 
@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-import de.uniba.wiai.lspi.chord.data.ID;
 
 /**
  * @author Karsten Loesing

@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import de.uniba.wiai.lspi.chord.com.Entry;
+import de.uniba.wiai.lspi.chord.data.Entry;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.util.logging.Logger;
 
