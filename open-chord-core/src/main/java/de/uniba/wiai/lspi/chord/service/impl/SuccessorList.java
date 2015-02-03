@@ -99,10 +99,11 @@ final class SuccessorList {
 	 *
 	 * @param nodeToAdd
 	 *            Reference to be added.
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If node to add is <code>null</code>.
 	 */
-	final void addSuccessor(Node nodeToAdd) {
+	final void addSuccessor(Node nodeToAdd) throws CommunicationException {
 
 		// check parameters
 		if (nodeToAdd == null) {
@@ -222,10 +223,11 @@ final class SuccessorList {
 	 *
 	 * @param nodeToDelete
 	 *            Reference to be removed.
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If reference to remove is <code>null</code>.
 	 */
-	final void removeReference(Node nodeToDelete) {
+	final void removeReference(Node nodeToDelete) throws CommunicationException {
 		if (nodeToDelete == null) {
 			NullPointerException e = new NullPointerException("Reference to remove may not be null!");
 			this.logger.error("Null pointer", e);

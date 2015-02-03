@@ -262,10 +262,11 @@ final class References {
 	 *
 	 * @param newReference
 	 *            Reference to be added to the local data structures.
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If the given reference is null.
 	 */
-	final synchronized void addReference(Node newReference) {
+	final synchronized void addReference(Node newReference) throws CommunicationException {
 
 		if (newReference == null) {
 			NullPointerException e = new NullPointerException("Node reference to be added must not be null!");
@@ -299,10 +300,11 @@ final class References {
 	 *
 	 * @param oldReference
 	 *            Reference to remove from ALL data structures.
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If reference to remove is <code>null</code>.
 	 */
-	final synchronized void removeReference(Node oldReference) {
+	final synchronized void removeReference(Node oldReference) throws CommunicationException {
 
 		if (oldReference == null) {
 			NullPointerException e = new NullPointerException("Reference to remove must not be null!");
@@ -329,10 +331,11 @@ final class References {
 	 *
 	 * @param removedReference
 	 *            Node to which the connection shall be closed, if there exists no reference any more.
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If given reference is null.
 	 */
-	void disconnectIfUnreferenced(Node removedReference) {
+	void disconnectIfUnreferenced(Node removedReference) throws CommunicationException {
 		if (removedReference == null) {
 			NullPointerException e = new NullPointerException("Reference may not be null!");
 			this.logger.error("Null pointer", e);
@@ -390,10 +393,11 @@ final class References {
 	 *
 	 * @param potentialPredecessor
 	 *            Reference on the node to be set as new predecessor; may not be null
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If potential predecessor is null.
 	 */
-	final synchronized void setPredecessor(Node potentialPredecessor) {
+	final synchronized void setPredecessor(Node potentialPredecessor) throws CommunicationException {
 
 		if (potentialPredecessor == null) {
 			NullPointerException e = new NullPointerException("Potential predecessor of method setPredecessor may not be " + "null!");
@@ -493,10 +497,11 @@ final class References {
 	 *
 	 * @param potentialPredecessor
 	 *            Reference which should be this node's predecessor.
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If the given reference is <code>null</code>.
 	 */
-	void addReferenceAsPredecessor(Node potentialPredecessor) {
+	void addReferenceAsPredecessor(Node potentialPredecessor) throws CommunicationException {
 
 		this.checkIfProxy(potentialPredecessor);
 		if (potentialPredecessor == null) {

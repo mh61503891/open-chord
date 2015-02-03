@@ -228,7 +228,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 		this.logger = Logger.getLogger(ChordImpl.class.getName() + "." + this.localID);
 	}
 
-	public final void create() throws ServiceException {
+	public final void create() throws ServiceException, CommunicationException {
 
 		// is node already connected?
 		if (this.localNode != null) {
@@ -250,7 +250,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 
 	}
 
-	public final void create(URL localURL1) throws ServiceException {
+	public final void create(URL localURL1) throws ServiceException, CommunicationException {
 
 		// check if parameters are valid
 		if (localURL1 == null) {
@@ -275,7 +275,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 
 	}
 
-	public final void create(URL localURL1, ID localID1) throws ServiceException {
+	public final void create(URL localURL1, ID localID1) throws ServiceException, CommunicationException {
 
 		// check if parameters are valid
 		if (localURL1 == null || localID1 == null) {
@@ -302,9 +302,10 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 	 * Performs all necessary tasks for creating a new Chord ring. Assumes that localID and localURL are correctly set. Is invoked by the methods
 	 * {@link #create()}, {@link #create(URL)}, and {@link #create(URL, ID)} only.
 	 *
+	 * @throws CommunicationException
 	 * @throws RuntimeException
 	 */
-	private final void createHelp() {
+	private final void createHelp() throws CommunicationException {
 
 		this.logger.debug("Help method for creating a new Chord ring invoked.");
 
@@ -349,7 +350,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 		this.maintenanceTasks.scheduleWithFixedDelay(new CheckPredecessorTask(this.references), ChordImpl.CHECK_PREDECESSOR_TASK_START, ChordImpl.CHECK_PREDECESSOR_TASK_INTERVAL, TimeUnit.SECONDS);
 	}
 
-	public final void join(URL bootstrapURL) throws ServiceException {
+	public final void join(URL bootstrapURL) throws ServiceException, CommunicationException {
 
 		// check if parameters are valid
 		if (bootstrapURL == null) {
@@ -376,7 +377,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 
 	}
 
-	public final void join(URL localURL1, URL bootstrapURL) throws ServiceException {
+	public final void join(URL localURL1, URL bootstrapURL) throws ServiceException, CommunicationException {
 
 		// check if parameters are valid
 		if (localURL1 == null || bootstrapURL == null) {
@@ -401,7 +402,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 
 	}
 
-	public final void join(URL localURL1, ID localID1, URL bootstrapURL) throws ServiceException {
+	public final void join(URL localURL1, ID localID1, URL bootstrapURL) throws ServiceException, CommunicationException {
 
 		// check if parameters are valid
 		if (localURL1 == null || localID1 == null || bootstrapURL == null) {
@@ -432,12 +433,13 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 	 *            URL of bootstrap node. Must not be null!.
 	 * @throws ServiceException
 	 *             If anything goes wrong during the join process.
+	 * @throws CommunicationException
 	 * @throws RuntimeException
 	 *             Length of successor list has not been initialized correctly.
 	 * @throws IllegalArgumentException
 	 *             <code>boostrapURL</code> is null!
 	 */
-	private final void joinHelp(URL bootstrapURL) throws ServiceException {
+	private final void joinHelp(URL bootstrapURL) throws ServiceException, CommunicationException {
 
 		// create local repository for entries
 		this.entries = new Entries();
@@ -548,7 +550,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 		this.createTasks();
 	}
 
-	public final void leave() {
+	public final void leave() throws CommunicationException {
 
 		if (this.localNode == null) {
 			// ring has not been created or joined, st. leave has no effect
@@ -576,7 +578,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 
 	}
 
-	public final void insert(Key key, Serializable s) {
+	public final void insert(Key key, Serializable s) throws CommunicationException {
 
 		// check parameters
 		if (key == null || s == null) {
@@ -616,7 +618,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 		this.logger.debug("New entry was inserted!");
 	}
 
-	public final Set<Serializable> retrieve(Key key) {
+	public final Set<Serializable> retrieve(Key key) throws CommunicationException {
 
 		// check parameters
 		if (key == null) {
@@ -668,7 +670,7 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 
 	}
 
-	public final void remove(Key key, Serializable s) {
+	public final void remove(Key key, Serializable s) throws CommunicationException {
 
 		// check parameters
 		if (key == null || s == null) {
@@ -726,8 +728,9 @@ public final class ChordImpl implements Chord, Report, AsynChord {
 	 * @throws NullPointerException
 	 *             If given ID is <code>null</code>.
 	 * @return Responsible node.
+	 * @throws CommunicationException
 	 */
-	final Node findSuccessor(ID key) {
+	final Node findSuccessor(ID key) throws CommunicationException {
 
 		if (key == null) {
 			NullPointerException e = new NullPointerException("ID to find successor for may not be null!");

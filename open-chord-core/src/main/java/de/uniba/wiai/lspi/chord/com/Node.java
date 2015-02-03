@@ -18,11 +18,13 @@ import de.uniba.wiai.lspi.chord.data.URL;
  * @version 1.0.5
  */
 @ToString
-@Setter
-@Getter
 public abstract class Node {
 
+	@Getter
+	@Setter
 	protected ID id;
+	@Getter
+	@Setter
 	protected URL url;
 
 	@Override
@@ -36,6 +38,14 @@ public abstract class Node {
 	public int hashCode() {
 		return id.hashCode();
 	}
+
+	/**
+	 * Requests a sign of live. This method is invoked by another node which thinks it is this node's successor.
+	 *
+	 * @throws CommunicationException
+	 *             Thrown if an unresolvable communication failure occurs.
+	 */
+	public abstract void ping() throws CommunicationException;
 
 	/**
 	 * Returns the Chord node which is responsible for the given key.
@@ -68,14 +78,6 @@ public abstract class Node {
 	 * @throws CommunicationException
 	 */
 	public abstract ReferencesAndEntries notifyAndCopyEntries(Node potentialPredecessor) throws CommunicationException;
-
-	/**
-	 * Requests a sign of live. This method is invoked by another node which thinks it is this node's successor.
-	 *
-	 * @throws CommunicationException
-	 *             Thrown if an unresolvable communication failure occurs.
-	 */
-	public abstract void ping() throws CommunicationException;
 
 	/**
 	 * Stores the given object under the given ID.
@@ -140,6 +142,6 @@ public abstract class Node {
 	/**
 	 * Closes the connection to the node.
 	 */
-	public abstract void disconnect();
+	public abstract void disconnect() throws CommunicationException;
 
 }

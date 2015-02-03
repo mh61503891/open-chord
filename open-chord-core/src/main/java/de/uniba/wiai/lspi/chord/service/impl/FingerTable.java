@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.uniba.wiai.lspi.chord.com.CommunicationException;
 import de.uniba.wiai.lspi.chord.com.Node;
 import de.uniba.wiai.lspi.chord.data.ID;
 import de.uniba.wiai.lspi.chord.data.URL;
@@ -136,10 +137,11 @@ final class FingerTable {
 	 *
 	 * @param index
 	 *            Index of entry to be set to <code>null</code>.
+	 * @throws CommunicationException
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             If given index is not contained in the finger table.
 	 */
-	private final void unsetEntry(int index) {
+	private final void unsetEntry(int index) throws CommunicationException {
 		if (index < 0 || index >= this.remoteNodes.length) {
 			ArrayIndexOutOfBoundsException e = new ArrayIndexOutOfBoundsException("unsetEntry was invoked with an index out of array " + "bounds; index=" + index + ", length of array="
 					+ this.remoteNodes.length);
@@ -171,10 +173,11 @@ final class FingerTable {
 	 *
 	 * @param proxy
 	 *            Reference to be added to the finger table.
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If given reference is <code>null</code>.
 	 */
-	final void addReference(Node proxy) {
+	final void addReference(Node proxy) throws CommunicationException {
 
 		if (proxy == null) {
 			NullPointerException e = new NullPointerException("Reference to add may not be null!");
@@ -300,10 +303,11 @@ final class FingerTable {
 	 *
 	 * @param node1
 	 *            Reference to be removed from the finger table.
+	 * @throws CommunicationException
 	 * @throws NullPointerException
 	 *             If given reference is <code>null</code>.
 	 */
-	final void removeReference(Node node1) {
+	final void removeReference(Node node1) throws CommunicationException {
 
 		if (node1 == null) {
 			NullPointerException e = new NullPointerException("removeReference cannot be invoked with value null!");

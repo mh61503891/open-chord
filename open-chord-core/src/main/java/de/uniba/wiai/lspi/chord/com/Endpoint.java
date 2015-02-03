@@ -121,7 +121,7 @@ public abstract class Endpoint {
 	 * Tell this endpoint that it can listen to incoming messages from other chord nodes.
 	 */
 	// TODO This method may throw an exception when starting to listen for incoming connections.
-	public void listen() {
+	public void listen() throws CommunicationException {
 		state = State.LISTENING;
 		this.onStateChanged(state);
 		this.openConnections();
@@ -139,7 +139,7 @@ public abstract class Endpoint {
 	/**
 	 * Tell this endpoint to disconnect and close all connections. If this method has been invoked the endpoint must be not reused!!!
 	 */
-	public void disconnect() {
+	public void disconnect() throws CommunicationException {
 		state = State.STARTED;
 		onStateChanged(state);
 		closeConnections();
@@ -199,16 +199,15 @@ public abstract class Endpoint {
 	}
 
 	/**
-	 * To implemented by sub classes. This method is called by {@link #listen()}to make it possible for other chord nodes to connect to the node on that this
+	 * To implemented by sub classes. This method is called by {@link #listen()} to make it possible for other chord nodes to connect to the node on that this
 	 * endpoint invocates methods.
 	 */
-	// TODO This method may throw an exception when starting to listen for incoming connections.
-	protected abstract void openConnections();
+	protected abstract void openConnections() throws CommunicationException;
 
 	/**
 	 * This method has to be overwritten by sub classes and is invoked by {@link #disconnect()} to close all connections from the chord network.
 	 */
-	protected abstract void closeConnections();
+	protected abstract void closeConnections() throws CommunicationException;
 
 	/**
 	 * This method has to be overwritten by subclasses. It is called from {@link #acceptEntries()} to indicate that entries can now be accepted. So maybe if an

@@ -12,6 +12,7 @@ import lombok.Getter;
  * @version 1.0.5
  */
 @Getter
+@Deprecated
 public class ReferencesAndEntries implements Serializable {
 
 	private static final long serialVersionUID = -3436082603636957676L;

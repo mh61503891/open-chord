@@ -85,10 +85,11 @@ public final class NodeImpl extends Node {
 	 *            Routing table of this node.
 	 * @param entries
 	 *            Repository for entries of this node.
+	 * @throws CommunicationException
 	 * @throws IllegalArgumentException
 	 *             If any of the parameter has value <code>null</code>.
 	 */
-	NodeImpl(ChordImpl impl, ID nodeID, URL nodeURL, References references, Entries entries) {
+	NodeImpl(ChordImpl impl, ID nodeID, URL nodeURL, References references, Entries entries) throws CommunicationException {
 
 		if (impl == null || nodeID == null || nodeURL == null || references == null || entries == null) {
 			throw new IllegalArgumentException("Parameters of the constructor may not have a null value!");
@@ -118,25 +119,31 @@ public final class NodeImpl extends Node {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws CommunicationException
 	 */
 	@Override
-	public final void disconnect() {
+	public final void disconnect() throws CommunicationException {
 		this.myEndpoint.disconnect();
 	}
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @throws CommunicationException
 	 */
 	@Override
-	public final Node findSuccessor(ID key) {
+	public final Node findSuccessor(ID key) throws CommunicationException {
 		return this.impl.findSuccessor(key);
 	}
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws CommunicationException
 	 */
 	@Override
-	public final List<Node> notify(Node potentialPredecessor) {
+	public final List<Node> notify(Node potentialPredecessor) throws CommunicationException {
 		/*
 		 * Mutual exclusion between notify and notifyAndCopyEntries. 17.03.2008. sven.
 		 */
@@ -341,9 +348,11 @@ public final class NodeImpl extends Node {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws CommunicationException
 	 */
 	@Override
-	final public void leavesNetwork(Node predecessor) {
+	final public void leavesNetwork(Node predecessor) throws CommunicationException {
 		if (this.logger.isEnabledFor(INFO)) {
 			this.logger.info("Leaves network invoked; " + this.id + ". Updating references.");
 			this.logger.info("New predecessor " + predecessor.getId());
